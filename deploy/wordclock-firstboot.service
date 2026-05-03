@@ -1,0 +1,14 @@
+[Unit]
+Description=Word Clock First Boot Setup
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/pi/clock/deploy/firstboot.sh
+RemainAfterExit=false
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

@@ -3,5 +3,5 @@ __pycache__/
 *.pyo
 .venv/
 venv/
-preview*.png
+preview.png
 *.egg-info/

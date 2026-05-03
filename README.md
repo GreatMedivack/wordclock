@@ -2,6 +2,8 @@
 
 Kisai-style word clock that displays time on a character grid. Active words (hour, minutes, AM/PM) are highlighted with inverted colors (white on black).
 
+![preview showing 3:47 PM](preview_4x.png)
+
 ```
 O N E  T W O  T H R E E
 F O U R  F I V E  S I X

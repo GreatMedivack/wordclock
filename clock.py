@@ -48,26 +48,24 @@ def main():
 
     log.info("word clock started")
 
+    last_key = None
     while True:
         t = time_source.get_time()
         h12, ampm = _to_12h(t)
         tens = t.tm_min // 10
         ones = t.tm_min % 10
+        key = (h12, tens, ones, ampm)
 
-        img = renderer.render(h12, tens, ones, ampm)
+        if key != last_key:
+            img = renderer.render(h12, tens, ones, ampm)
+            if has_display:
+                epd.show(img)
+            else:
+                img.save("preview.png")
+                log.info("preview saved: %d:%02d %s", h12, t.tm_min, ampm)
+            last_key = key
 
-        if has_display:
-            if epd._refresh_count == 0:
-                epd.show_base(img)
-            epd.show(img)
-        else:
-            img.save("preview.png")
-            log.info("preview saved: %d:%02d %s", h12, t.tm_min, ampm)
-
-        sleep_sec = 60 - time.localtime().tm_sec
-        if sleep_sec <= 0:
-            sleep_sec = 60
-        time.sleep(sleep_sec)
+        time.sleep(5)
 
 
 if __name__ == "__main__":

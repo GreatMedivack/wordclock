@@ -17,24 +17,18 @@ class EPDDriver:
         self._epd.Clear()
         log.info("e-paper initialized and cleared")
 
-    def show_base(self, image):
-        buf = self._epd.getbuffer(image)
-        self._epd.displayPartBaseImage(buf)
-        self._refresh_count = 0
-        log.debug("base image set for partial refresh mode")
-
     def show(self, image):
-        self._refresh_count += 1
         buf = self._epd.getbuffer(image)
 
-        if self._refresh_count >= self._full_refresh_interval:
-            self._epd.init()
-            self._epd.display(buf)
+        if self._refresh_count == 0 or self._refresh_count >= self._full_refresh_interval:
+            if self._refresh_count > 0:
+                self._epd.init()
             self._epd.displayPartBaseImage(buf)
-            self._refresh_count = 0
-            log.info("full refresh (ghosting cleanup)")
+            self._refresh_count = 1
+            log.info("full refresh")
         else:
             self._epd.displayPartial(buf)
+            self._refresh_count += 1
             log.debug("partial refresh #%d", self._refresh_count)
 
     def sleep(self):

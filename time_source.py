@@ -4,10 +4,11 @@ import logging
 log = logging.getLogger(__name__)
 
 _rtc = None
+_rtc_available = True
 
 
 def _init_rtc():
-    global _rtc
+    global _rtc, _rtc_available
     try:
         import board
         import adafruit_pcf8523
@@ -16,11 +17,12 @@ def _init_rtc():
         log.info("PCF8523 RTC detected on I2C")
     except Exception as e:
         _rtc = None
+        _rtc_available = False
         log.warning("RTC not available, using system time: %s", e)
 
 
 def get_time():
-    if _rtc is None:
+    if _rtc is None and _rtc_available:
         _init_rtc()
 
     if _rtc is not None:

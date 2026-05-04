@@ -31,12 +31,12 @@ NINE  WORD  CLOCK
 - **Waveshare e-Paper** driver library
 - **Adafruit Blinka + CircuitPython PCF8523** for RTC
 - **systemd** service for autostart
-- Partial e-paper refresh every minute, full refresh every 30 cycles to prevent ghosting
+- Polls every 5s, partial e-paper refresh on minute change, full refresh every 30 cycles to prevent ghosting
 
 ## Structure
 
 ```
-clock.py           — main loop: read time, render, display, sleep until next minute
+clock.py           — main loop: poll time every 5s, render and display on change
 renderer.py        — 11x15 character grid rendering to 250x122 PIL Image
 epd_driver.py      — Waveshare e-Paper HAT V4 wrapper with partial/full refresh
 time_source.py     — PCF8523 RTC with system time fallback

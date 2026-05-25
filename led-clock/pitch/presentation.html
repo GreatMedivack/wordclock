@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordClock — LED буквенные часы</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0a0a0a;
+    color: #e8e8e8;
+    line-height: 1.6;
+  }
+
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    border-bottom: 1px solid #1a1a1a;
+    position: relative;
+  }
+
+  .slide-narrow {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    background: radial-gradient(ellipse at center, #1a1510 0%, #0a0a0a 70%);
+  }
+  .hero h1 {
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #ffb84d, #ff8c1a, #ffb84d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+  }
+  .hero .subtitle {
+    font-size: 24px;
+    font-weight: 300;
+    color: #888;
+    margin-bottom: 40px;
+  }
+  .hero .tagline {
+    font-size: 18px;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ── Section headers ── */
+  h2 {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    letter-spacing: -1px;
+  }
+  h2 .accent {
+    color: #ffb84d;
+  }
+  h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #ccc;
+  }
+
+  /* ── Render gallery ── */
+  .renders {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .render-card {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #111;
+    border: 1px solid #222;
+    transition: transform 0.3s;
+  }
+  .render-card:hover { transform: scale(1.02); }
+  .render-card img {
+    width: 100%;
+    display: block;
+  }
+  .render-card .caption {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: #888;
+    text-align: center;
+  }
+  .render-card .caption strong {
+    color: #ddd;
+  }
+
+  /* ── Grid visualization ── */
+  .grid-demo {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 30px 0;
+  }
+  .grid-box {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .grid-box h4 {
+    color: #888;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .grid-box .stats {
+    color: #ffb84d;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .grid-letters {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    letter-spacing: 2px;
+    color: #333;
+    white-space: pre;
+  }
+  .grid-letters .lit { color: #ffb84d; font-weight: 700; }
+
+  /* ── Price table ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  th, td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  th {
+    color: #888;
+    font-weight: 500;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  td { font-size: 15px; }
+  .price { color: #ffb84d; font-weight: 600; font-size: 18px; }
+  .dim { color: #555; }
+
+  /* ── BOM ── */
+  .bom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 30px 0;
+  }
+  .bom-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 28px;
+  }
+  .bom-card h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+  .bom-card .total {
+    border-top: 1px solid #333;
+    margin-top: 16px;
+    padding-top: 16px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffb84d;
+  }
+
+  /* ── Market positioning ── */
+  .market-bar {
+    display: flex;
+    align-items: stretch;
+    margin: 40px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 120px;
+  }
+  .market-segment {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 16px 20px;
+    text-align: center;
+  }
+  .market-segment .label { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+  .market-segment .value { font-size: 18px; font-weight: 700; }
+  .seg-empty { background: #1a1a1a; flex: 3; border: 2px dashed #333; }
+  .seg-ours { background: linear-gradient(135deg, #4a3520, #2a1a0a); flex: 2; border: 2px solid #ffb84d; }
+  .seg-budget { background: #141414; flex: 1; }
+  .seg-premium { background: #141414; flex: 2; }
+
+  /* ── Financials ── */
+  .fin-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 30px 0;
+  }
+  .fin-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+  }
+  .fin-card.highlight {
+    border-color: #ffb84d;
+    background: linear-gradient(135deg, #1a1510, #111);
+  }
+  .fin-card .scenario {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #888;
+    margin-bottom: 12px;
+  }
+  .fin-card .big-number {
+    font-size: 36px;
+    font-weight: 800;
+    color: #ffb84d;
+    margin-bottom: 4px;
+  }
+  .fin-card .unit {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+  .fin-card .detail {
+    font-size: 14px;
+    color: #999;
+    line-height: 1.8;
+  }
+
+  /* ── Misc ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .pill {
+    display: inline-block;
+    background: #1a1510;
+    border: 1px solid #332a1a;
+    color: #ffb84d;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 4px 8px 0;
+  }
+  .note {
+    background: #111;
+    border-left: 3px solid #ffb84d;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+    color: #999;
+    border-radius: 0 8px 8px 0;
+  }
+  .langs {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin: 30px 0;
+  }
+  .lang-badge {
+    background: #151515;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 20px 30px;
+    text-align: center;
+    min-width: 120px;
+  }
+  .lang-badge .flag { font-size: 32px; margin-bottom: 8px; }
+  .lang-badge .name { font-size: 14px; color: #888; }
+  .lang-badge .grid-size { font-size: 12px; color: #555; margin-top: 4px; }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    color: #333;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 1: HERO -->
+<div class="slide hero">
+  <div>
+    <h1>WORDCLOCK</h1>
+    <p class="subtitle">LED буквенные часы с подсветкой слов</p>
+    <div class="langs">
+      <div class="lang-badge"><div class="flag">🇬🇧</div><div class="name">English</div><div class="grid-size">11×15 · 165 LED</div></div>
+      <div class="lang-badge"><div class="flag">🇷🇺</div><div class="name">Русский</div><div class="grid-size">13×15 · 195 LED</div></div>
+      <div class="lang-badge"><div class="flag">🇯🇵</div><div class="name">日本語</div><div class="grid-size">8×10 · 80 LED</div></div>
+    </div>
+    <p class="tagline">Настенные и настольные часы с матрицей букв, где подсвечиваются только слова текущего времени. Три языка. Незанятая ниша на рынке РФ.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 2: PRODUCT — EN -->
+<div class="slide">
+  <div class="slide-narrow">
+    <h2><span class="accent">English</span> Edition</h2>
+    <div class="renders">
+      <div class="render-card">
+        <img src="../concepts/wall_concept.png" alt="Wall EN">
+        <div class="caption"><strong>Настенный</strong> · 375×275 мм · ячейка 25 мм</div>
+      </div>
+      <div class="render-card">
+        <img src="../concepts/desktop_concept.png" alt="Desktop EN">
+        <div class="caption"><strong>Настольный</strong> · 180×132 мм · ячейка 12 мм</div>
+      </div>
+    </div>
+    <div class="grid-demo">
+      <div class="grid-box">
+        <h4>5:47 PM</h4>
+        <div class="grid-letters">O N E X T W O D T H R E E I R
+F O U R <span class="lit">F I V E</span> S I X H A T N
+S E V E N R E I G H T B U L K
+N I N E T E N V C E L E V E N
+A M T W E L V E X <span class="lit">P M</span> H O U R
+Z E R O X O N E D T W O B I A
+T H R E E G <span class="lit">F O U R</span> F I V E R
+Z E R O X O N E T W O I A H D
+T H R E E F O U R F I V E S K
+S I X <span class="lit">S E V E N</span> E I G H T L M
+N I N E W O R D C L O C K Z X</div>
+        <div class="stats">11 × 15 = 165 LED</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 3: PRODUCT — RU -->
+<div class="slide">
+  <div class="slide-narrow">
+    <h2><span class="accent">Русская</span> версия</h2>
+    <div class="renders">
+      <div class="render-card">
+        <img src="../concepts/wall_concept_ru.png" alt="Wall RU">
+        <div class="caption"><strong>Настенный</strong> · 375×275 мм</div>
+      </div>
+      <div class="render-card">
+        <img src="../concepts/desktop_concept_ru.png" alt="Desktop RU">
+        <div class="caption"><strong>Настольный</strong> · 180×156 мм</div>
+      </div>
+    </div>
+    <div class="grid-demo">
+      <div class="grid-box">
+        <h4>5:27 НЧ (PM)</h4>
+        <div class="grid-letters">О Д И Н Ж Д В А Ю Т Р И Б Ш П
+Ч Е Т Ы Р Е Л <span class="lit">П Я Т Ь</span> Г У К М
+Ш Е С Т Ь Ж С Е М Ь Г Д Ц У Х
+В О С Е М Ь Х Д Е В Я Т Ь Й Ш
+Д Е С Я Т Ь Л К М Б Ц У Ж Ф Х
+О Д И Н Н А Д Ц А Т Ь Г У К М
+Д В Е Н А Д Ц А Т Ь Д Н Ж <span class="lit">Н Ч</span>
+Н О Л Ь Ж О Д И Н Р <span class="lit">Д В А</span> Б Ч
+Т Р И Г Ч Е Т Ы Р Е К П Я Т Ь
+Н О Л Ь Ю О Д И Н М Д В А В У
+Т Р И З Ч Е Т Ы Р Е Х П Я Т Ь
+Ш Е С Т Ь <span class="lit">С Е М Ь</span> В О С Е М Ь
+Д Е В Я Т Ь Ч А С Ы Ж К Л М Н</div>
+        <div class="stats">13 × 15 = 195 LED</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 4: PRODUCT — JA -->
+<div class="slide">
+  <div class="slide-narrow">
+    <h2><span class="accent">日本語</span> Japanese Edition</h2>
+    <div class="renders">
+      <div class="render-card">
+        <img src="../concepts/wall_concept_ja.png" alt="Wall JA">
+        <div class="caption"><strong>Настенный</strong> · 350×280 мм</div>
+      </div>
+      <div class="render-card">
+        <img src="../concepts/desktop_concept_ja.png" alt="Desktop JA">
+        <div class="caption"><strong>Настольный</strong> · 150×120 мм</div>
+      </div>
+    </div>
+    <div class="grid-demo">
+      <div class="grid-box">
+        <h4>午後五時四七分 · 5:47 PM</h4>
+        <div class="grid-letters">午 前 花 <span class="lit">午 後</span> 雲 時 計 夢 光
+一 雪 二 風 三 山 四 森 <span class="lit">五</span> 泉
+六 波 七 虹 八 鳥 九 竹 <span class="lit">時</span> 霧
+十 露 十 一 霜 十 二 月 雪 空
+〇 火 一 水 二 木 三 金 <span class="lit">四</span> 土
+五 雨 〇 石 一 霧 二 夢 三 露
+四 竹 五 花 六 雪 <span class="lit">七</span> 音 八 鳥
+九 海 川 山 森 泉 波 虹 風 <span class="lit">分</span></div>
+        <div class="stats">8 × 10 = 80 LED · самая компактная версия</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 5: MARKET GAP -->
+<div class="slide">
+  <div class="slide-narrow">
+    <h2>Рынок РФ: <span class="accent">пустая ниша</span></h2>
+
+    <div class="market-bar">
+      <div class="market-segment seg-budget">
+        <div class="label">Бюджет</div>
+        <div class="value">1 500–7 500 ₽</div>
+        <div class="label" style="margin-top:8px">AliExpress (EN)<br>Вербариус (LCD)</div>
+      </div>
+      <div class="market-segment seg-empty">
+        <div class="label">Средний сегмент</div>
+        <div class="value" style="color:#555">ПУСТО</div>
+        <div class="label">Ни одного продукта на рынке</div>
+      </div>
+      <div class="market-segment seg-ours">
+        <div class="label">WordClock</div>
+        <div class="value" style="color:#ffb84d">8 700–26 000 ₽</div>
+        <div class="label" style="color:#ffb84d">$100–$300</div>
+      </div>
+      <div class="market-segment seg-premium">
+        <div class="label">Премиум</div>
+        <div class="value">55 000–485 000 ₽</div>
+        <div class="label" style="margin-top:8px">QLOCKTWO</div>
+      </div>
+    </div>
+
+    <div class="note">
+      Между Вербариусом (7 500 ₽, LCD-текст) и QLOCKTWO (от 55 000 ₽) нет ни одного LED word clock с поддержкой русского языка. Наш продукт заполняет эту нишу.
+    </div>
+
+    <table>
+      <tr><th>Конкурент</th><th>Тип</th><th>Языки</th><th>Цена</th><th>Доступность в РФ</th></tr>
+      <tr><td>AliExpress LED clock</td><td>LED-матрица</td><td>EN, DE</td><td class="dim">1 500–5 000 ₽</td><td>Доставка 2–4 нед.</td></tr>
+      <tr><td>Вербариус (Лебедев)</td><td>LCD-текст</td><td>RU, EN +3</td><td class="dim">7 500 ₽</td><td>В наличии</td></tr>
+      <tr><td style="color:#ffb84d"><strong>WordClock (мы)</strong></td><td>LED-матрица</td><td><strong>RU, EN, JA</strong></td><td class="price">8 700–26 000 ₽</td><td><strong>Сайт + маркетплейсы</strong></td></tr>
+      <tr><td>QLOCKTWO Touch</td><td>LED-матрица</td><td>20+ яз.</td><td class="dim">55 000–290 000 ₽</td><td>Через дилеров</td></tr>
+      <tr><td>QLOCKTWO Classic</td><td>LED-матрица</td><td>20+ яз.</td><td class="dim">145 000–485 000 ₽</td><td>Под заказ</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 6: BOM -->
+<div class="slide">
+  <div class="slide-narrow">
+    <h2>Себестоимость <span class="accent">компонентов</span></h2>
+
+    <div class="bom-grid">
+      <div class="bom-card">
+        <h3>🖥 Настольный (Desktop)</h3>
+        <table>
+          <tr><td>ESP32-S3 DevKit</td><td class="price">550 ₽</td></tr>
+          <tr><td>WS2812B лента 60/м, 3м</td><td class="price">700 ₽</td></tr>
+          <tr><td>Чёрный акрил 3мм, лазерная резка</td><td class="price">800 ₽</td></tr>
+          <tr><td>Матовый акрил 2мм (рассеиватель)</td><td class="price">250 ₽</td></tr>
+          <tr><td>3D-печать решётки (baffles)</td><td class="price">400 ₽</td></tr>
+          <tr><td>Задняя стенка + подставка</td><td class="price">300 ₽</td></tr>
+          <tr><td>USB-C кабель, провода, пайка</td><td class="price">200 ₽</td></tr>
+        </table>
+        <div class="total">Итого: ~3 200 ₽ ($37)</div>
+      </div>
+
+      <div class="bom-card">
+        <h3>🧱 Настенный (Wall)</h3>
+        <table>
+          <tr><td>ESP32-S3 DevKit</td><td class="price">550 ₽</td></tr>
+          <tr><td>WS2812B лента 60/м, 3м</td><td class="price">700 ₽</td></tr>
+          <tr><td>Чёрный акрил 3мм, лазерная резка</td><td class="price">1 500 ₽</td></tr>
+          <tr><td>Матовый акрил 2мм (рассеиватель)</td><td class="price">400 ₽</td></tr>
+          <tr><td>3D-печать решётки (baffles)</td><td class="price">700 ₽</td></tr>
+          <tr><td>Задняя стенка (фанера 4мм)</td><td class="price">300 ₽</td></tr>
+          <tr><td>Рамка (алюминий/дерево)</td><td class="price">800 ₽</td></tr>
+          <tr><td>USB-C кабель, провода, пайка</td><td class="price">200 ₽</td></tr>
+        </table>
+        <div class="total">Итого: ~5 150 ₽ ($59)</div>
+      </div>
+    </div>
+
+    <div class="note">
+      Цены при штучном производстве. При партии от 50 шт. себестоимость снижается на 25–35% за счёт оптовых цен на компоненты и пакетной лазерной резки.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 7: PRICING -->
+<div class="slide">
+  <div class="slide-narrow">
+    <h2>Розничные <span class="accent">цены</span></h2>
+
+    <div class="bom-grid">
+      <div class="bom-card">
+        <h3>🖥 Настольный</h3>
+        <div style="text-align:center; margin:20px 0">
+          <div style="font-size:48px; font-weight:800; color:#ffb84d">$100–150</div>
+          <div style="font-size:22px; color:#888; margin-top:8px">8 700 – 13 000 ₽</div>
+        </div>
+        <table>
+          <tr><td>Себестоимость</td><td>3 200 ₽</td></tr>
+          <tr><td>Маржа (при 10 900 ₽)</td><td class="price">70%</td></tr>
+          <tr><td>Прибыль с единицы</td><td class="price">7 700 ₽</td></tr>
+        </table>
+      </div>
+
+      <div class="bom-card">
+        <h3>🧱 Настенный</h3>
+        <div style="text-align:center; margin:20px 0">
+          <div style="font-size:48px; font-weight:800; color:#ffb84d">$150–300</div>
+          <div style="font-size:22px; color:#888; margin-top:8px">13 000 – 26 000 ₽</div>
+        </div>
+        <table>
+          <tr><td>Себестоимость</td><td>5 150 ₽</td></tr>
+          <tr><td>Маржа (при 19 500 ₽)</td><td class="price">74%</td></tr>
+          <tr><td>Прибыль с единицы</td><td class="price">14 350 ₽</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="note">
+      Для сравнения: QLOCKTWO Touch (аналогичный настольный формат) стоит от 145 000 ₽. Наша цена — <strong>в 13 раз ниже</strong> при сопоставимом визуальном эффекте.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 8: PROJECTIONS -->
+<div class="slide">
+  <div class="slide-narrow">
+    <h2>Прогноз <span class="accent">на 12 месяцев</span></h2>
+    <p style="color:#888; margin-bottom:30px">Микс продаж: 60% настольных (ср. цена 10 900 ₽) + 40% настенных (ср. цена 19 500 ₽). Комиссия маркетплейсов ~15%.</p>
+
+    <div class="fin-grid">
+      <div class="fin-card">
+        <div class="scenario">Минимум</div>
+        <div class="big-number">60</div>
+        <div class="unit">штук / год · 5 в мес.</div>
+        <div class="detail">
+          Выручка: <strong>870 000 ₽</strong><br>
+          Себестоимость: 246 000 ₽<br>
+          Комиссия МП: 130 000 ₽<br>
+          Реклама: 60 000 ₽<br>
+          <span style="color:#ffb84d; font-weight:600">Прибыль: 434 000 ₽</span><br>
+          <span style="color:#666">~36 000 ₽/мес.</span>
+        </div>
+      </div>
+
+      <div class="fin-card highlight">
+        <div class="scenario">Нормальный</div>
+        <div class="big-number">300</div>
+        <div class="unit">штук / год · 25 в мес.</div>
+        <div class="detail">
+          Выручка: <strong>4 350 000 ₽</strong><br>
+          Себестоимость: 1 050 000 ₽<br>
+          Комиссия МП: 650 000 ₽<br>
+          Реклама: 240 000 ₽<br>
+          <span style="color:#ffb84d; font-weight:600">Прибыль: 2 410 000 ₽</span><br>
+          <span style="color:#666">~200 000 ₽/мес.</span>
+        </div>
+      </div>
+
+      <div class="fin-card">
+        <div class="scenario">Ажиотаж</div>
+        <div class="big-number">900</div>
+        <div class="unit">штук / год · 75 в мес.</div>
+        <div class="detail">
+          Выручка: <strong>13 050 000 ₽</strong><br>
+          Себестоимость: 2 700 000 ₽<br>
+          Комиссия МП: 1 960 000 ₽<br>
+          Реклама: 600 000 ₽<br>
+          <span style="color:#ffb84d; font-weight:600">Прибыль: 7 790 000 ₽</span><br>
+          <span style="color:#666">~650 000 ₽/мес.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Каналы продаж:</strong> собственный сайт (0% комиссии), Ozon / Wildberries (~15% комиссии), Яндекс.Маркет (~10%). Подарочный сегмент — пиковые продажи в декабре–феврале (Новый год, 14 и 23 февраля, 8 марта).
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 9: ADVANTAGES -->
+<div class="slide">
+  <div class="slide-narrow">
+    <h2>Почему <span class="accent">это работает</span></h2>
+
+    <div class="two-col">
+      <div>
+        <h3>Преимущества продукта</h3>
+        <p style="margin-bottom:12px">
+          <span class="pill">Единственный RU word clock</span>
+          <span class="pill">В 13× дешевле QLOCKTWO</span>
+          <span class="pill">WiFi + NTP</span>
+          <span class="pill">USB-C питание</span>
+          <span class="pill">3 языка</span>
+          <span class="pill">Подарочный потенциал</span>
+        </p>
+        <ul style="color:#999; padding-left:20px; line-height:2">
+          <li>Нулевая конкуренция в среднем сегменте РФ</li>
+          <li>Русский язык — уникальное предложение на рынке</li>
+          <li>Японская версия — премиум-подарок</li>
+          <li>Маржинальность 70–74%</li>
+          <li>Масштабирование без пресс-форм: лазерная резка + 3D-печать</li>
+          <li>Низкий порог входа: ~50 000 ₽ на первую партию из 10 шт.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Дорожная карта</h3>
+        <table>
+          <tr><td class="dim">Месяц 1–2</td><td>Прототип, тестирование, фото</td></tr>
+          <tr><td class="dim">Месяц 3</td><td>Сайт + листинг на Ozon</td></tr>
+          <tr><td class="dim">Месяц 4–6</td><td>Первые продажи, сбор отзывов</td></tr>
+          <tr><td class="dim">Месяц 7+</td><td>Wildberries, расширение линейки</td></tr>
+        </table>
+        <h3 style="margin-top:30px">Возможное расширение</h3>
+        <p style="color:#999; line-height:2">
+          RGB-версия с выбором цвета через приложение<br>
+          Премиум-материалы: дуб, орех, латунная рамка<br>
+          Кастомные языки под заказ (укр, каз, арм)<br>
+          Корпоративные подарки с брендированием
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  WordClock · LED Word Clock · 2026
+</footer>
+
+</body>
+</html>

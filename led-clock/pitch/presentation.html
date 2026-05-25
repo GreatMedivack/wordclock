@@ -144,6 +144,7 @@
     border: 1px solid #222;
     transition: transform 0.3s;
   }
+  .render-card { cursor: pointer; }
   .render-card:hover { transform: scale(1.02); }
   .render-card img {
     width: 100%;
@@ -151,6 +152,32 @@
     object-fit: contain;
     display: block;
     background: #111;
+  }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .lightbox.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 0 60px rgba(255,184,77,0.15);
   }
   .render-card .caption {
     padding: 6px 12px;
@@ -808,6 +835,10 @@ N I N E W O R D C L O C K Z X</div>
 
 </div><!-- /deck -->
 
+<div class="lightbox" id="lightbox">
+  <img id="lightboxImg" src="" alt="">
+</div>
+
 <script>
 (function() {
   const deck = document.getElementById('deck');
@@ -849,6 +880,24 @@ N I N E W O R D C L O C K Z X</div>
   });
 
   go(0);
+
+  // Lightbox
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.render-card img').forEach(function(img) {
+    img.addEventListener('click', function(e) {
+      e.stopPropagation();
+      lbImg.src = img.src;
+      lb.classList.add('active');
+    });
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) {
+      lb.classList.remove('active');
+      e.stopPropagation();
+    }
+  });
 })();
 </script>
 

@@ -32,9 +32,9 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 50px 70px;
+    padding: 20px 50px;
     position: relative;
-    overflow-y: auto;
+    overflow: hidden;
     flex-shrink: 0;
   }
 
@@ -92,22 +92,22 @@
     background: radial-gradient(ellipse at center, #1a1510 0%, #0a0a0a 70%);
   }
   .hero h1 {
-    font-size: 72px;
+    font-size: 64px;
     font-weight: 800;
     letter-spacing: -2px;
     background: linear-gradient(135deg, #ffb84d, #ff8c1a, #ffb84d);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .hero .subtitle {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 300;
     color: #888;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
   }
   .hero .tagline {
-    font-size: 18px;
+    font-size: 16px;
     color: #666;
     max-width: 600px;
     margin: 0 auto;
@@ -115,18 +115,18 @@
 
   /* ── Section headers ── */
   h2 {
-    font-size: 42px;
+    font-size: 26px;
     font-weight: 700;
-    margin-bottom: 40px;
+    margin-bottom: 12px;
     letter-spacing: -1px;
   }
   h2 .accent {
     color: #ffb84d;
   }
   h3 {
-    font-size: 22px;
+    font-size: 15px;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 6px;
     color: #ccc;
   }
 
@@ -134,8 +134,8 @@
   .renders {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-bottom: 40px;
+    gap: 16px;
+    margin-bottom: 16px;
   }
   .render-card {
     border-radius: 16px;
@@ -147,11 +147,13 @@
   .render-card:hover { transform: scale(1.02); }
   .render-card img {
     width: 100%;
+    max-height: 22vh;
+    object-fit: cover;
     display: block;
   }
   .render-card .caption {
-    padding: 16px 20px;
-    font-size: 14px;
+    padding: 6px 12px;
+    font-size: 12px;
     color: #888;
     text-align: center;
   }
@@ -162,36 +164,36 @@
   /* ── Grid visualization ── */
   .grid-demo {
     display: flex;
-    gap: 40px;
+    gap: 8px;
     justify-content: center;
     flex-wrap: wrap;
-    margin: 30px 0;
+    margin: 4px 0;
   }
   .grid-box {
     background: #111;
     border: 1px solid #222;
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 8px;
+    padding: 6px 10px;
     text-align: center;
   }
   .grid-box h4 {
     color: #888;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: 500;
-    margin-bottom: 12px;
+    margin-bottom: 3px;
     text-transform: uppercase;
     letter-spacing: 2px;
   }
   .grid-box .stats {
     color: #ffb84d;
-    font-size: 14px;
-    margin-top: 8px;
+    font-size: 10px;
+    margin-top: 2px;
   }
   .grid-letters {
     font-family: 'Courier New', monospace;
-    font-size: 13px;
-    line-height: 1.8;
-    letter-spacing: 2px;
+    font-size: 9px;
+    line-height: 1.35;
+    letter-spacing: 1px;
     color: #333;
     white-space: pre;
   }
@@ -201,46 +203,46 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin: 6px 0;
   }
   th, td {
-    padding: 14px 20px;
+    padding: 4px 8px;
     text-align: left;
     border-bottom: 1px solid #1a1a1a;
   }
   th {
     color: #888;
     font-weight: 500;
-    font-size: 13px;
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-  td { font-size: 15px; }
-  .price { color: #ffb84d; font-weight: 600; font-size: 18px; }
+  td { font-size: 12px; }
+  .price { color: #ffb84d; font-weight: 600; font-size: 12px; }
   .dim { color: #555; }
 
   /* ── BOM ── */
   .bom-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin: 30px 0;
+    gap: 10px;
+    margin: 8px 0;
   }
   .bom-card {
     background: #111;
     border: 1px solid #222;
-    border-radius: 12px;
-    padding: 28px;
+    border-radius: 10px;
+    padding: 10px 14px;
   }
   .bom-card h3 {
-    margin-bottom: 20px;
-    font-size: 20px;
+    margin-bottom: 4px;
+    font-size: 14px;
   }
   .bom-card .total {
     border-top: 1px solid #333;
-    margin-top: 16px;
-    padding-top: 16px;
-    font-size: 20px;
+    margin-top: 6px;
+    padding-top: 6px;
+    font-size: 15px;
     font-weight: 700;
     color: #ffb84d;
   }
@@ -249,20 +251,20 @@
   .market-bar {
     display: flex;
     align-items: stretch;
-    margin: 40px 0;
-    border-radius: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
     overflow: hidden;
-    height: 120px;
+    height: 80px;
   }
   .market-segment {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 16px 20px;
+    padding: 8px 12px;
     text-align: center;
   }
-  .market-segment .label { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
-  .market-segment .value { font-size: 18px; font-weight: 700; }
+  .market-segment .label { font-size: 10px; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+  .market-segment .value { font-size: 13px; font-weight: 700; }
   .seg-empty { background: #1a1a1a; flex: 3; border: 2px dashed #333; }
   .seg-ours { background: linear-gradient(135deg, #4a3520, #2a1a0a); flex: 2; border: 2px solid #ffb84d; }
   .seg-budget { background: #141414; flex: 1; }
@@ -272,14 +274,14 @@
   .fin-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin: 30px 0;
+    gap: 10px;
+    margin: 8px 0;
   }
   .fin-card {
     background: #111;
     border: 1px solid #222;
-    border-radius: 12px;
-    padding: 28px;
+    border-radius: 10px;
+    padding: 14px;
     text-align: center;
   }
   .fin-card.highlight {
@@ -287,68 +289,68 @@
     background: linear-gradient(135deg, #1a1510, #111);
   }
   .fin-card .scenario {
-    font-size: 13px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #888;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
   }
   .fin-card .big-number {
-    font-size: 36px;
+    font-size: 26px;
     font-weight: 800;
     color: #ffb84d;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
   .fin-card .unit {
-    font-size: 14px;
+    font-size: 11px;
     color: #666;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
   }
   .fin-card .detail {
-    font-size: 14px;
+    font-size: 11px;
     color: #999;
-    line-height: 1.8;
+    line-height: 1.4;
   }
 
   /* ── Misc ── */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .pill {
     display: inline-block;
     background: #1a1510;
     border: 1px solid #332a1a;
     color: #ffb84d;
-    padding: 4px 14px;
+    padding: 2px 10px;
     border-radius: 20px;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 500;
-    margin: 0 4px 8px 0;
+    margin: 0 3px 4px 0;
   }
   .note {
     background: #111;
     border-left: 3px solid #ffb84d;
-    padding: 16px 20px;
-    margin: 20px 0;
-    font-size: 14px;
+    padding: 8px 12px;
+    margin: 6px 0;
+    font-size: 11px;
     color: #999;
     border-radius: 0 8px 8px 0;
   }
   .langs {
     display: flex;
-    gap: 16px;
+    gap: 10px;
     justify-content: center;
-    margin: 30px 0;
+    margin: 12px 0;
   }
   .lang-badge {
     background: #151515;
     border: 1px solid #222;
-    border-radius: 12px;
-    padding: 20px 30px;
+    border-radius: 10px;
+    padding: 10px 20px;
     text-align: center;
-    min-width: 120px;
+    min-width: 100px;
   }
-  .lang-badge .flag { font-size: 32px; margin-bottom: 8px; }
-  .lang-badge .name { font-size: 14px; color: #888; }
-  .lang-badge .grid-size { font-size: 12px; color: #555; margin-top: 4px; }
+  .lang-badge .flag { font-size: 24px; margin-bottom: 4px; }
+  .lang-badge .name { font-size: 12px; color: #888; }
+  .lang-badge .grid-size { font-size: 10px; color: #555; margin-top: 2px; }
 
   footer {
     text-align: center;
@@ -574,9 +576,9 @@ N I N E W O R D C L O C K Z X</div>
     <div class="bom-grid">
       <div class="bom-card">
         <h3>🖥 Настольный</h3>
-        <div style="text-align:center; margin:20px 0">
-          <div style="font-size:48px; font-weight:800; color:#ffb84d">$100–150</div>
-          <div style="font-size:22px; color:#888; margin-top:8px">8 700 – 13 000 ₽</div>
+        <div style="text-align:center; margin:10px 0">
+          <div style="font-size:32px; font-weight:800; color:#ffb84d">$100–150</div>
+          <div style="font-size:15px; color:#888; margin-top:4px">8 700 – 13 000 ₽</div>
         </div>
         <table>
           <tr><td>Себестоимость</td><td>3 200 ₽</td></tr>
@@ -587,9 +589,9 @@ N I N E W O R D C L O C K Z X</div>
 
       <div class="bom-card">
         <h3>🧱 Настенный</h3>
-        <div style="text-align:center; margin:20px 0">
-          <div style="font-size:48px; font-weight:800; color:#ffb84d">$150–300</div>
-          <div style="font-size:22px; color:#888; margin-top:8px">13 000 – 26 000 ₽</div>
+        <div style="text-align:center; margin:10px 0">
+          <div style="font-size:32px; font-weight:800; color:#ffb84d">$150–300</div>
+          <div style="font-size:15px; color:#888; margin-top:4px">13 000 – 26 000 ₽</div>
         </div>
         <table>
           <tr><td>Себестоимость</td><td>5 150 ₽</td></tr>
@@ -609,7 +611,7 @@ N I N E W O R D C L O C K Z X</div>
 <div class="slide">
   <div class="slide-narrow">
     <h2>Прогноз <span class="accent">на 12 месяцев</span></h2>
-    <p style="color:#888; margin-bottom:30px">Микс продаж: 60% настольных (ср. цена 10 900 ₽) + 40% настенных (ср. цена 19 500 ₽). Комиссия маркетплейсов ~15%.</p>
+    <p style="color:#888; margin-bottom:8px; font-size:12px">Микс продаж: 60% настольных (ср. цена 10 900 ₽) + 40% настенных (ср. цена 19 500 ₽). Комиссия маркетплейсов ~15%.</p>
 
     <div class="fin-grid">
       <div class="fin-card">
@@ -677,7 +679,7 @@ N I N E W O R D C L O C K Z X</div>
           <span class="pill">3 языка</span>
           <span class="pill">Подарочный потенциал</span>
         </p>
-        <ul style="color:#999; padding-left:20px; line-height:2">
+        <ul style="color:#999; padding-left:20px; line-height:1.6; font-size:12px">
           <li>Нулевая конкуренция в среднем сегменте РФ</li>
           <li>Русский язык — уникальное предложение на рынке</li>
           <li>Японская версия — премиум-подарок</li>
@@ -694,8 +696,8 @@ N I N E W O R D C L O C K Z X</div>
           <tr><td class="dim">Месяц 4–6</td><td>Первые продажи, сбор отзывов</td></tr>
           <tr><td class="dim">Месяц 7+</td><td>Wildberries, расширение линейки</td></tr>
         </table>
-        <h3 style="margin-top:30px">Возможное расширение</h3>
-        <p style="color:#999; line-height:2">
+        <h3 style="margin-top:12px">Возможное расширение</h3>
+        <p style="color:#999; line-height:1.5; font-size:12px">
           RGB-версия с выбором цвета через приложение<br>
           Премиум-материалы: дуб, орех, латунная рамка<br>
           Кастомные языки под заказ (укр, каз, арм)<br>
@@ -706,79 +708,65 @@ N I N E W O R D C L O C K Z X</div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ SLIDE 10: SUPPLIERS -->
+<!-- ═══════════════════════════════════════════════════════ SLIDE 10: SUPPLIERS – MATERIALS -->
 <div class="slide">
   <div class="slide-narrow">
-    <h2>Поставщики и <span class="accent">услуги · СПб</span></h2>
+    <h2>Поставщики · СПб: <span class="accent">резка и материалы</span></h2>
 
     <h3>Лазерная резка акрила</h3>
     <table>
-      <tr><th>Компания</th><th>Цена за метр реза</th><th>Мин. заказ</th><th>Примечание</th></tr>
-      <tr><td>Вираж <span class="dim">(viraj-spb.ru)</span></td><td>от 8 ₽/м</td><td>—</td><td>Макс. поле 1180×880 мм, скидка 15% на сложные заказы</td></tr>
-      <tr><td>ЭЛАМ <span class="dim">(elam-spb.ru)</span></td><td>14–21 ₽/м</td><td>2 000 ₽</td><td>Поле 3100×2100 мм, свой склад акрила</td></tr>
+      <tr><th>Компания</th><th>Цена/м</th><th>Мин. заказ</th><th>Примечание</th></tr>
+      <tr><td>Вираж <span class="dim">(viraj-spb.ru)</span></td><td>от 8 ₽/м</td><td>—</td><td>Поле 1180×880, скидка 15%</td></tr>
+      <tr><td>ЭЛАМ <span class="dim">(elam-spb.ru)</span></td><td>14–21 ₽/м</td><td>2 000 ₽</td><td>Поле 3100×2100, свой склад</td></tr>
       <tr><td>ZPOS <span class="dim">(zpos.ru)</span></td><td>от 9 ₽/м</td><td>—</td><td></td></tr>
-      <tr><td>BigCut <span class="dim">(bigcut.ru)</span></td><td>17–21 ₽/м</td><td>—</td><td>8(812)627-13-80</td></tr>
-      <tr><td>Центр лазерной резки <span class="dim">(centr-lr.ru)</span></td><td>17–21 ₽/м</td><td>3 000 ₽</td><td></td></tr>
+      <tr><td>BigCut <span class="dim">(bigcut.ru)</span></td><td>17–21 ₽/м</td><td>—</td><td></td></tr>
+      <tr><td>Центр лаз. резки <span class="dim">(centr-lr.ru)</span></td><td>17–21 ₽/м</td><td>3 000 ₽</td><td></td></tr>
     </table>
 
     <div class="note">
-      <strong>Длина реза на панель:</strong> ~10 м (настенная, 165 букв), ~5 м (настольная). Стоимость реза одной настенной панели: <strong>80–210 ₽</strong>. При минимальном заказе от 1 500 ₽ выгодно резать партиями от 5–10 штук. Принимают SVG, DXF, CDR. Срок: 1–5 рабочих дней.
+      Рез панели: ~10 м (настенная), ~5 м (настольная) → <strong>80–210 ₽</strong> за панель. Принимают SVG/DXF/CDR. Срок: 1–5 дней.
     </div>
 
-    <h3 style="margin-top:40px">Акрил — материалы</h3>
+    <h3 style="margin-top:12px">Акрил — материалы</h3>
     <table>
-      <tr><th>Материал</th><th>Размер листа</th><th>Цена за лист</th><th>Панелей с листа</th><th>Цена за панель</th><th>Поставщик</th></tr>
+      <tr><th>Материал</th><th>Лист</th><th>Цена листа</th><th>Панелей</th><th>₽/панель</th><th>Поставщик</th></tr>
       <tr>
-        <td>Чёрный акрил литой 3мм</td><td>1200×600 мм</td>
-        <td class="price">2 337 ₽</td><td>~6 настенных</td><td class="price">~390 ₽</td>
-        <td>Chempion24 <span class="dim">(chempion24.ru)</span></td>
-      </tr>
-      <tr>
-        <td>Чёрный акрил литой 3мм</td><td>1200×600 мм</td>
-        <td class="price">2 337 ₽</td><td>~30 настольных</td><td class="price">~80 ₽</td>
+        <td>Чёрный литой 3мм</td><td>1200×600</td>
+        <td class="price">2 337 ₽</td><td>~6 настен.</td><td class="price">~390 ₽</td>
         <td>Chempion24</td>
       </tr>
       <tr>
-        <td>Молочный акрил 2мм (рассеиватель)</td><td>2050×3050 мм</td>
-        <td class="price">5 850 ₽</td><td>~60+ любых</td><td class="price">~100–200 ₽</td>
-        <td>УникумПласт <span class="dim">(unikumplast.spb.ru)</span></td>
+        <td>Чёрный литой 3мм</td><td>1200×600</td>
+        <td class="price">2 337 ₽</td><td>~30 настол.</td><td class="price">~80 ₽</td>
+        <td>Chempion24</td>
+      </tr>
+      <tr>
+        <td>Молочный 2мм (рассеив.)</td><td>2050×3050</td>
+        <td class="price">5 850 ₽</td><td>~60+</td><td class="price">~100–200 ₽</td>
+        <td>УникумПласт</td>
       </tr>
     </table>
 
     <div class="note">
-      УникумПласт и АнтейПлекс (anteyplex.ru) в СПб режут акрил в размер с листа. СтройБаза Online (stroybaza-online.ru) — бесплатная нарезка при любом количестве.
+      УникумПласт и АнтейПлекс режут акрил в размер. СтройБаза Online — бесплатная нарезка.
     </div>
 
-    <h3 style="margin-top:40px">Электроника</h3>
+    <h3 style="margin-top:12px">Электроника</h3>
     <table>
       <tr><th>Компонент</th><th>Цена</th><th>Поставщик</th><th>Доставка</th></tr>
-      <tr>
-        <td>ESP32-S3 DevKit (WiFi, USB-C)</td>
-        <td class="price">350–490 ₽</td>
-        <td>AliExpress / SMDX.ru <span class="dim">(СПб, локальный склад)</span></td>
-        <td>2–4 нед. / 1–2 дня</td>
-      </tr>
-      <tr>
-        <td>WS2812B лента 60 LED/м, IP33 <span class="dim">(за метр)</span></td>
-        <td class="price">308–395 ₽/м</td>
-        <td>Giant4.ru</td>
-        <td>2–5 дней</td>
-      </tr>
-      <tr>
-        <td>WS2812B лента 3м <span class="dim">(165 LED, минимум)</span></td>
-        <td class="price">924–1 190 ₽</td>
-        <td>Giant4.ru / Ozon</td>
-        <td>2–5 дней</td>
-      </tr>
-      <tr>
-        <td>USB-C кабель + 5V 2A адаптер</td>
-        <td class="price">200–400 ₽</td>
-        <td>Ozon / Wildberries</td>
-        <td>1–3 дня</td>
-      </tr>
+      <tr><td>ESP32-S3 DevKit</td><td class="price">350–490 ₽</td><td>AliExpress / SMDX.ru</td><td>2–4 нед. / 1–2 дня</td></tr>
+      <tr><td>WS2812B 60 LED/м <span class="dim">(за метр)</span></td><td class="price">308–395 ₽/м</td><td>Giant4.ru</td><td>2–5 дней</td></tr>
+      <tr><td>WS2812B 3м <span class="dim">(165 LED)</span></td><td class="price">924–1 190 ₽</td><td>Giant4.ru / Ozon</td><td>2–5 дней</td></tr>
+      <tr><td>USB-C + 5V 2A адаптер</td><td class="price">200–400 ₽</td><td>Ozon / WB</td><td>1–3 дня</td></tr>
     </table>
+  </div>
+</div>
 
-    <h3 style="margin-top:40px">Итого: себестоимость при партии 10 шт.</h3>
+<!-- ═══════════════════════════════════════════════════════ SLIDE 11: SUPPLIERS – BOM -->
+<div class="slide">
+  <div class="slide-narrow">
+    <h2>BOM при партии 10 шт. <span class="accent">· СПб</span></h2>
+
     <div class="bom-grid">
       <div class="bom-card">
         <h3>🖥 Настольный</h3>
@@ -787,10 +775,10 @@ N I N E W O R D C L O C K Z X</div>
           <tr><td>WS2812B 3м (Giant4)</td><td class="price">924 ₽</td></tr>
           <tr><td>Чёрный акрил 3мм (Chempion24)</td><td class="price">80 ₽</td></tr>
           <tr><td>Лазерная резка ~5м (Вираж)</td><td class="price">150 ₽</td></tr>
-          <tr><td>Молочный акрил 2мм (УникумПласт)</td><td class="price">100 ₽</td></tr>
+          <tr><td>Молочный акрил 2мм</td><td class="price">100 ₽</td></tr>
           <tr><td>3D-печать решётки</td><td class="price">350 ₽</td></tr>
           <tr><td>Задняя стенка + подставка</td><td class="price">250 ₽</td></tr>
-          <tr><td>USB-C кабель, провода, пайка</td><td class="price">200 ₽</td></tr>
+          <tr><td>USB-C, провода, пайка</td><td class="price">200 ₽</td></tr>
         </table>
         <div class="total">Итого: ~2 404 ₽ ($28)</div>
       </div>
@@ -801,20 +789,19 @@ N I N E W O R D C L O C K Z X</div>
           <tr><td>WS2812B 3м (Giant4)</td><td class="price">924 ₽</td></tr>
           <tr><td>Чёрный акрил 3мм (Chempion24)</td><td class="price">390 ₽</td></tr>
           <tr><td>Лазерная резка ~10м (Вираж)</td><td class="price">210 ₽</td></tr>
-          <tr><td>Молочный акрил 2мм (УникумПласт)</td><td class="price">200 ₽</td></tr>
+          <tr><td>Молочный акрил 2мм</td><td class="price">200 ₽</td></tr>
           <tr><td>3D-печать решётки</td><td class="price">500 ₽</td></tr>
           <tr><td>Задняя стенка (фанера 4мм)</td><td class="price">200 ₽</td></tr>
-          <tr><td>Рамка (алюм. профиль / дерево)</td><td class="price">700 ₽</td></tr>
-          <tr><td>USB-C кабель, провода, пайка</td><td class="price">200 ₽</td></tr>
+          <tr><td>Рамка (алюм./дерево)</td><td class="price">700 ₽</td></tr>
+          <tr><td>USB-C, провода, пайка</td><td class="price">200 ₽</td></tr>
         </table>
         <div class="total">Итого: ~3 674 ₽ ($42)</div>
       </div>
     </div>
 
     <div class="note">
-      Цены актуальны на май 2026, СПб. При закупке ESP32-S3 партиями от 50 шт. на AliExpress цена падает до ~250 ₽/шт. Лазерная резка партии 50+ панелей: 8–12 ₽/м (вместо 17–21 ₽/м в рознице). Общее снижение BOM при масштабировании: <strong>до 30–40%</strong>.
+      Цены на май 2026, СПб. При 50+ шт.: ESP32-S3 ~250 ₽, лазерная резка 8–12 ₽/м. Общее снижение BOM при масштабе: <strong>до 30–40%</strong>.
     </div>
-
   </div>
 </div>
 

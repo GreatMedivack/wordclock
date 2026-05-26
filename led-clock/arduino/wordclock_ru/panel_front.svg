@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="276.72mm" height="276.72mm" viewBox="0 0 276.72 276.72">
-  <rect width="276.72" height="276.72" fill="#1a1a1a"/>
-  <rect x="0" y="0" width="276.72" height="276.72" fill="none" stroke="red" stroke-width="0.2"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="276.72mm" height="299.72mm" viewBox="0 0 276.72 299.72">
+  <rect width="276.72" height="299.72" fill="#1a1a1a"/>
+  <rect x="0" y="0" width="276.72" height="299.72" fill="none" stroke="red" stroke-width="0.2"/>
   <line x1="5.0" y1="5.0" x2="271.72" y2="5.0" stroke="#333" stroke-width="0.1"/>
   <line x1="5.0" y1="21.67" x2="271.72" y2="21.67" stroke="#333" stroke-width="0.1"/>
   <line x1="5.0" y1="38.34" x2="271.72" y2="38.34" stroke="#333" stroke-width="0.1"/>
@@ -36,36 +36,36 @@
   <line x1="238.38000000000002" y1="5.0" x2="238.38000000000002" y2="271.72" stroke="#333" stroke-width="0.1"/>
   <line x1="255.05" y1="5.0" x2="255.05" y2="271.72" stroke="#333" stroke-width="0.1"/>
   <line x1="271.72" y1="5.0" x2="271.72" y2="271.72" stroke="#333" stroke-width="0.1"/>
-  <text x="13.34" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">К</text>
-  <text x="30.01" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="13.34" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">К</text>
+  <text x="30.01" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="46.68" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="63.35" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
   <text x="80.02" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
   <text x="96.69" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="113.36" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ц</text>
   <text x="130.03" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
-  <text x="146.70" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
+  <text x="146.7" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="163.37" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
   <text x="180.04" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">П</text>
   <text x="196.71" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Я</text>
-  <text x="213.38" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
-  <text x="230.05" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
+  <text x="213.38" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Т</text>
+  <text x="230.05" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Ь</text>
   <text x="246.72" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Б</text>
   <text x="263.39" y="13.34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Ж</text>
-  <text x="13.34" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Б</text>
-  <text x="30.01" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">В</text>
-  <text x="46.68" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">К</text>
+  <text x="13.34" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Б</text>
+  <text x="30.01" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
+  <text x="46.68" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">К</text>
   <text x="63.35" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="80.02" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="96.69" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
   <text x="113.36" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Я</text>
   <text x="130.03" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
-  <text x="146.70" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
+  <text x="146.7" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
   <text x="163.37" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">М</text>
   <text x="180.04" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
-  <text x="196.71" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Н</text>
-  <text x="213.38" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">У</text>
-  <text x="230.05" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
+  <text x="196.71" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Н</text>
+  <text x="213.38" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">У</text>
+  <text x="230.05" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="246.72" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="263.39" y="30.01" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Ж</text>
   <text x="13.34" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ч</text>
@@ -76,7 +76,7 @@
   <text x="96.69" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Р</text>
   <text x="113.36" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="130.03" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
-  <text x="146.70" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">П</text>
+  <text x="146.7" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">П</text>
   <text x="163.37" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="180.04" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Л</text>
   <text x="196.71" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
@@ -84,21 +84,21 @@
   <text x="230.05" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
   <text x="246.72" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Н</text>
   <text x="263.39" y="46.68" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
-  <text x="13.34" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">К</text>
-  <text x="30.01" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="13.34" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">К</text>
+  <text x="30.01" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="46.68" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Б</text>
   <text x="63.35" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="80.02" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">З</text>
   <text x="96.69" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">П</text>
   <text x="113.36" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Я</text>
   <text x="130.03" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
-  <text x="146.70" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
+  <text x="146.7" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
   <text x="163.37" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="180.04" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="196.71" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
   <text x="213.38" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Я</text>
-  <text x="230.05" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
-  <text x="246.72" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
+  <text x="230.05" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Т</text>
+  <text x="246.72" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">И</text>
   <text x="263.39" y="63.35" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="13.34" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="30.01" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
@@ -108,7 +108,7 @@
   <text x="96.69" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
   <text x="113.36" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="130.03" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
-  <text x="146.70" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ч</text>
+  <text x="146.7" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ч</text>
   <text x="163.37" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="180.04" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="196.71" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
@@ -116,7 +116,7 @@
   <text x="230.05" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Р</text>
   <text x="246.72" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="263.39" y="80.02" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
-  <text x="13.34" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">К</text>
+  <text x="13.34" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">К</text>
   <text x="30.01" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">П</text>
   <text x="46.68" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="63.35" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Р</text>
@@ -124,13 +124,13 @@
   <text x="96.69" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="113.36" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="130.03" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="146.70" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
+  <text x="146.7" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
   <text x="163.37" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="180.04" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="196.71" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Р</text>
   <text x="213.38" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="230.05" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
-  <text x="246.72" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
+  <text x="246.72" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="263.39" y="96.69" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="13.34" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="30.01" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Р</text>
@@ -140,7 +140,7 @@
   <text x="96.69" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="113.36" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="130.03" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="146.70" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
+  <text x="146.7" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="163.37" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="180.04" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
   <text x="196.71" y="113.36" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Я</text>
@@ -156,7 +156,7 @@
   <text x="96.69" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Р</text>
   <text x="113.36" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="130.03" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="146.70" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="146.7" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="163.37" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="180.04" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">П</text>
   <text x="196.71" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Я</text>
@@ -164,22 +164,22 @@
   <text x="230.05" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="246.72" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="263.39" y="130.03" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="13.34" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ш</text>
-  <text x="30.01" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
-  <text x="46.68" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
-  <text x="63.35" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
-  <text x="80.02" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="96.69" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
-  <text x="113.36" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="130.03" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
-  <text x="146.70" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
-  <text x="163.37" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
-  <text x="180.04" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
-  <text x="196.71" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">М</text>
-  <text x="213.38" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="230.05" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
-  <text x="246.72" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="263.39" y="146.70" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">К</text>
+  <text x="13.34" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ш</text>
+  <text x="30.01" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
+  <text x="46.68" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
+  <text x="63.35" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
+  <text x="80.02" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
+  <text x="96.69" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="113.36" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
+  <text x="130.03" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
+  <text x="146.7" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
+  <text x="163.37" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
+  <text x="180.04" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
+  <text x="196.71" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">М</text>
+  <text x="213.38" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
+  <text x="230.05" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="246.72" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
+  <text x="263.39" y="146.7" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">К</text>
   <text x="13.34" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
   <text x="30.01" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="46.68" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
@@ -188,7 +188,7 @@
   <text x="96.69" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="113.36" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="130.03" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="146.70" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
+  <text x="146.7" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="163.37" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="180.04" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
   <text x="196.71" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Я</text>
@@ -196,36 +196,36 @@
   <text x="230.05" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="246.72" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="263.39" y="163.37" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="13.34" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">К</text>
-  <text x="30.01" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="13.34" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">К</text>
+  <text x="30.01" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="46.68" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="63.35" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="80.02" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
   <text x="96.69" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Н</text>
   <text x="113.36" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Н</text>
   <text x="130.03" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
-  <text x="146.70" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
+  <text x="146.7" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="163.37" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ц</text>
   <text x="180.04" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
   <text x="196.71" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="213.38" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="230.05" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
-  <text x="246.72" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
+  <text x="230.05" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="246.72" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="263.39" y="180.04" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Д</text>
-  <text x="13.34" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">К</text>
-  <text x="30.01" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="13.34" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">К</text>
+  <text x="30.01" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
   <text x="46.68" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="63.35" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
   <text x="80.02" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="96.69" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Н</text>
   <text x="113.36" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
   <text x="130.03" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
-  <text x="146.70" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ц</text>
+  <text x="146.7" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ц</text>
   <text x="163.37" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
   <text x="180.04" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="196.71" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
-  <text x="213.38" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
-  <text x="230.05" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
+  <text x="213.38" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="230.05" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="246.72" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Б</text>
   <text x="263.39" y="196.71" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="13.34" y="213.38" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ч</text>
@@ -236,7 +236,7 @@
   <text x="96.69" y="213.38" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
   <text x="113.36" y="213.38" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="130.03" y="213.38" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Р</text>
-  <text x="146.70" y="213.38" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
+  <text x="146.7" y="213.38" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
   <text x="163.37" y="213.38" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ч</text>
   <text x="180.04" y="213.38" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="196.71" y="213.38" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
@@ -252,7 +252,7 @@
   <text x="96.69" y="230.05" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
   <text x="113.36" y="230.05" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="130.03" y="230.05" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">М</text>
-  <text x="146.70" y="230.05" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
+  <text x="146.7" y="230.05" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
   <text x="163.37" y="230.05" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
   <text x="180.04" y="230.05" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="196.71" y="230.05" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">С</text>
@@ -268,7 +268,7 @@
   <text x="96.69" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
   <text x="113.36" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="130.03" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">В</text>
-  <text x="146.70" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
+  <text x="146.7" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Е</text>
   <text x="163.37" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Н</text>
   <text x="180.04" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
   <text x="196.71" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
@@ -276,20 +276,24 @@
   <text x="230.05" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
   <text x="246.72" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
   <text x="263.39" y="246.72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
-  <text x="13.34" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">К</text>
-  <text x="30.01" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Г</text>
-  <text x="46.68" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Б</text>
+  <text x="13.34" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">К</text>
+  <text x="30.01" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Г</text>
+  <text x="46.68" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Б</text>
   <text x="63.35" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">О</text>
   <text x="80.02" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="96.69" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">И</text>
   <text x="113.36" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Н</text>
   <text x="130.03" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Н</text>
-  <text x="146.70" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
+  <text x="146.7" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
   <text x="163.37" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="180.04" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ц</text>
-  <text x="196.71" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">А</text>
-  <text x="213.38" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Т</text>
-  <text x="230.05" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="white" text-anchor="middle" dominant-baseline="central">Ь</text>
+  <text x="196.71" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">А</text>
+  <text x="213.38" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Т</text>
+  <text x="230.05" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Ь</text>
   <text x="246.72" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">Д</text>
   <text x="263.39" y="263.39" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8" fill="#555" text-anchor="middle" dominant-baseline="central">П</text>
+  <circle cx="38.34" cy="291.72" r="3.0" fill="white" stroke="#333" stroke-width="0.1"/>
+  <circle cx="105.02" cy="291.72" r="3.0" fill="white" stroke="#333" stroke-width="0.1"/>
+  <circle cx="171.7" cy="291.72" r="3.0" fill="white" stroke="#333" stroke-width="0.1"/>
+  <circle cx="238.38" cy="291.72" r="3.0" fill="white" stroke="#333" stroke-width="0.1"/>
 </svg>

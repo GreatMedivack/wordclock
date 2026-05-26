@@ -31,7 +31,12 @@ COLS = 16
 ROWS = 16
 PITCH = 16.67  # mm between LED centers
 MARGIN = 5.0   # mm border
-PANEL = MARGIN * 2 + PITCH * COLS  # 276.72mm
+PANEL_W = MARGIN * 2 + PITCH * COLS         # 276.72mm
+DOT_ROW_Y = MARGIN + PITCH * ROWS + 20.0   # 20mm below grid
+DOT_SPACING = PITCH * 4                     # 66.68mm between dots
+DOT_RADIUS = 3.0                            # mm
+NUM_DOTS = 4
+PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN  # ~304mm
 
 FONT_FACE = "USSR STENCIL"
 FONT_SIZE = 10.0  # mm
@@ -63,8 +68,8 @@ def generate_svg():
     svg_path = "/home/medivack/work/puppet/clock/led-clock/arduino/wordclock_ru/panel_stencil.svg"
 
     mm_to_pt = 72.0 / 25.4
-    w_pt = PANEL * mm_to_pt
-    h_pt = PANEL * mm_to_pt
+    w_pt = PANEL_W * mm_to_pt
+    h_pt = PANEL_H * mm_to_pt
 
     surface = cairo.SVGSurface(svg_path, w_pt, h_pt)
     ctx = cairo.Context(surface)
@@ -72,13 +77,13 @@ def generate_svg():
 
     # Background
     ctx.set_source_rgb(*BG_COLOR)
-    ctx.rectangle(0, 0, PANEL, PANEL)
+    ctx.rectangle(0, 0, PANEL_W, PANEL_H)
     ctx.fill()
 
     # Cut border
     ctx.set_source_rgb(*CUT_STROKE)
     ctx.set_line_width(CUT_WIDTH)
-    ctx.rectangle(0, 0, PANEL, PANEL)
+    ctx.rectangle(0, 0, PANEL_W, PANEL_H)
     ctx.stroke()
 
     ctx.select_font_face(FONT_FACE, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
@@ -98,18 +103,34 @@ def generate_svg():
             ctx.move_to(x, y)
             ctx.text_path(ch)
 
-            # Fill with even-odd rule (stencil gaps are built into font glyphs)
             ctx.set_source_rgb(*LETTER_COLOR)
             ctx.set_fill_rule(cairo.FillRule.EVEN_ODD)
             ctx.fill_preserve()
 
-            # Thin red cut outline
             ctx.set_source_rgb(*CUT_STROKE)
             ctx.set_line_width(CUT_WIDTH * 0.5)
             ctx.stroke()
 
+    # Dot indicators below grid
+    total_dots_w = (NUM_DOTS - 1) * DOT_SPACING
+    dot_start_x = PANEL_W / 2 - total_dots_w / 2
+
+    for i in range(NUM_DOTS):
+        dx = dot_start_x + i * DOT_SPACING
+        dy = DOT_ROW_Y
+
+        ctx.new_path()
+        ctx.arc(dx, dy, DOT_RADIUS, 0, 2 * math.pi)
+
+        ctx.set_source_rgb(*LETTER_COLOR)
+        ctx.fill_preserve()
+
+        ctx.set_source_rgb(*CUT_STROKE)
+        ctx.set_line_width(CUT_WIDTH * 0.5)
+        ctx.stroke()
+
     surface.finish()
-    print(f"Done: {svg_path}")
+    print(f"Done: {svg_path}  ({PANEL_W:.1f} × {PANEL_H:.1f} mm)")
     return svg_path
 
 

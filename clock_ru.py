@@ -16,10 +16,12 @@ epd = None
 
 
 def _to_12h(t):
-    h12 = t.tm_hour % 12
+    h24 = t.tm_hour
+    ampm = "AM" if h24 < 12 else "PM"
+    h12 = h24 % 12
     if h12 == 0:
         h12 = 12
-    return h12
+    return h12, ampm
 
 
 def _shutdown(signum, frame):
@@ -49,17 +51,18 @@ def main():
     last_key = None
     while True:
         t = time_source.get_time()
-        h12 = _to_12h(t)
-        minute = t.tm_min
-        key = (h12, minute)
+        h12, ampm = _to_12h(t)
+        tens = t.tm_min // 10
+        ones = t.tm_min % 10
+        key = (h12, tens, ones, ampm)
 
         if key != last_key:
-            img = renderer.render(h12, minute)
+            img = renderer.render(h12, tens, ones, ampm)
             if has_display:
                 epd.show(img)
             else:
                 img.save("preview.png")
-                log.info("preview saved: %d:%02d", h12, minute)
+                log.info("preview saved: %d:%02d %s", h12, t.tm_min, ampm)
             last_key = key
 
         time.sleep(5)

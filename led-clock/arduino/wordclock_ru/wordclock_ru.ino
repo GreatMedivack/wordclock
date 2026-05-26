@@ -1,5 +1,6 @@
-// Word Clock RU — ESP32-S3 + WS2812B (195 LEDs, 13×15 Cyrillic grid)
-// Displays: ПЯТЬ ДН ЧЕТЫРЕ СЕМЬ (5:47 PM)
+// Word Clock RU v2 — ESP32-S3 + WS2812B (256 LEDs, 16×16 grid)
+// Natural Russian speech: ЧЕТВЕРТЬ ВОСЬМОГО, БЕЗ ДЕСЯТИ ТРИ
+// Time rounded to 5 minutes
 
 #include <FastLED.h>
 #include <WiFi.h>
@@ -8,82 +9,90 @@
 const char* WIFI_SSID     = "YOUR_WIFI_SSID";
 const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
 const char* NTP_SERVER    = "pool.ntp.org";
-const long  GMT_OFFSET    = 3 * 3600;
+const long  GMT_OFFSET    = 3 * 3600;  // MSK (UTC+3)
 const int   DST_OFFSET    = 0;
 
-#define LED_PIN    48
-#define COLS       15
-#define ROWS       13
-#define NUM_LEDS   (ROWS * COLS)  // 195
-#define BRIGHTNESS 40
-#define LED_TYPE   WS2812B
+#define LED_PIN     48
+#define COLS        16
+#define ROWS        16
+#define NUM_LEDS    (ROWS * COLS)  // 256
+#define BRIGHTNESS  40
+#define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
 CRGB leds[NUM_LEDS];
 const CRGB COLOR_ON  = CRGB(255, 180, 80);
 const CRGB COLOR_OFF = CRGB(0, 0, 0);
 
-// Grid (for reference):
-// 0: ОДИНЖДВАЮТРИБШП
-// 1: ЧЕТЫРЕЛПЯТЬГУКМ
-// 2: ШЕСТЬЖСЕМЬГДЦУХ
-// 3: ВОСЕМЬХДЕВЯТЬЙШ
-// 4: ДЕСЯТЬЛКМБЦУЖФХ
-// 5: ОДИННАДЦАТЬГУКМ
-// 6: ДВЕНАДЦАТЬДНЖНЧ
-// 7: НОЛЬЖОДИНРДВАБЧ   (tens)
-// 8: ТРИГЧЕТЫРЕКПЯТЬ   (tens)
-// 9: НОЛЬЮОДИНМДВАВУ   (ones)
-// 10: ТРИЗЧЕТЫРЕХПЯТЬ  (ones)
-// 11: ШЕСТЬСЕМЬВОСЕМЬ  (ones)
-// 12: ДЕВЯТЬЧАСЫЖКЛМН  (ones)
+// Grid 16×16:
+//  0: КГДВАДЦАТЬПЯТЬБЖ   ДВАДЦАТЬ ПЯТЬ
+//  1: БВКДЕСЯТЬМИНУТГЖ   ДЕСЯТЬ МИНУТ
+//  2: ЧЕТВЕРТЬПОЛОВИНА   ЧЕТВЕРТЬ ПОЛОВИНА
+//  3: КГБЕЗПЯТИДЕСЯТИД   БЕЗ ПЯТИ ДЕСЯТИ
+//  4: ДВАДЦАТИЧЕТВЕРТИ   ДВАДЦАТИ ЧЕТВЕРТИ
+//  5: КПЕРВОГОВТОРОГОГ   ПЕРВОГО ВТОРОГО
+//  6: ТРЕТЬЕГОДЕСЯТОГО   ТРЕТЬЕГО ДЕСЯТОГО
+//  7: ЧЕТВЁРТОГОПЯТОГО   ЧЕТВЁРТОГО ПЯТОГО
+//  8: ШЕСТОГОСЕДЬМОГОК   ШЕСТОГО СЕДЬМОГО
+//  9: ВОСЬМОГОДЕВЯТОГО   ВОСЬМОГО ДЕВЯТОГО
+// 10: КГОДИННАДЦАТОГОД   ОДИННАДЦАТОГО
+// 11: КГДВЕНАДЦАТОГОБД   ДВЕНАДЦАТОГО
+// 12: ЧАСДВАТРИЧЕТЫРЕК   ЧАС ДВА ТРИ ЧЕТЫРЕ
+// 13: ШЕСТЬСЕМЬВОСЕМЬК   ШЕСТЬ СЕМЬ ВОСЕМЬ
+// 14: ДЕВЯТЬДВЕНАДЦАТЬ   ДЕВЯТЬ ДВЕНАДЦАТЬ
+// 15: КГБОДИННАДЦАТЬДП   ОДИННАДЦАТЬ
 
 struct WordPos { uint8_t row; uint8_t col_start; uint8_t col_end; };
 
-const WordPos HOURS[] = {
-    {0, 0, 0},    // placeholder
-    {0, 0, 4},    // 1: ОДИН
-    {0, 5, 8},    // 2: ДВА
-    {0, 9, 12},   // 3: ТРИ
-    {1, 0, 6},    // 4: ЧЕТЫРЕ
-    {1, 7, 11},   // 5: ПЯТЬ
-    {2, 0, 5},    // 6: ШЕСТЬ
-    {2, 6, 10},   // 7: СЕМЬ
-    {3, 0, 6},    // 8: ВОСЕМЬ
-    {3, 7, 13},   // 9: ДЕВЯТЬ
-    {4, 0, 6},    // 10: ДЕСЯТЬ
-    {5, 0, 11},   // 11: ОДИННАДЦАТЬ
-    {6, 0, 10},   // 12: ДВЕНАДЦАТЬ
+// ── Minute/modifier words (rows 0-4) ──
+const WordPos W_DVADTSAT  = {0,  2, 10};  // ДВАДЦАТЬ
+const WordPos W_PYAT      = {0, 10, 14};  // ПЯТЬ (shared: minute & hour 5)
+const WordPos W_DESYAT    = {1,  3,  9};  // ДЕСЯТЬ (shared: minute & hour 10)
+const WordPos W_MINUT     = {1,  9, 14};  // МИНУТ
+const WordPos W_CHETVERT  = {2,  0,  8};  // ЧЕТВЕРТЬ
+const WordPos W_POLOVINA  = {2,  8, 16};  // ПОЛОВИНА
+const WordPos W_BEZ       = {3,  2,  5};  // БЕЗ
+const WordPos W_PYATI     = {3,  5,  9};  // ПЯТИ
+const WordPos W_DESYATI   = {3,  9, 15};  // ДЕСЯТИ
+const WordPos W_DVADTSATI = {4,  0,  8};  // ДВАДЦАТИ
+const WordPos W_CHETVERTI = {4,  8, 16};  // ЧЕТВЕРТИ
+
+// ── Genitive hours (for :05-:30 — "X минут СЛЕДУЮЩЕГО") ──
+const WordPos HOURS_GEN[] = {
+    {0, 0, 0},       // placeholder
+    { 5,  1,  8},    //  1: ПЕРВОГО
+    { 5,  8, 15},    //  2: ВТОРОГО
+    { 6,  0,  8},    //  3: ТРЕТЬЕГО
+    { 7,  0, 10},    //  4: ЧЕТВЁРТОГО
+    { 7, 10, 16},    //  5: ПЯТОГО
+    { 8,  0,  7},    //  6: ШЕСТОГО
+    { 8,  7, 15},    //  7: СЕДЬМОГО
+    { 9,  0,  8},    //  8: ВОСЬМОГО
+    { 9,  8, 16},    //  9: ДЕВЯТОГО
+    { 6,  8, 16},    // 10: ДЕСЯТОГО
+    {10,  2, 15},    // 11: ОДИННАДЦАТОГО
+    {11,  2, 14},    // 12: ДВЕНАДЦАТОГО
 };
 
-const WordPos AMPM_WORDS[] = {
-    {6, 10, 12},  // 0: ДН (AM)
-    {6, 13, 15},  // 1: НЧ (PM)
-};
-
-const WordPos TENS_WORDS[] = {
-    {7, 0, 4},    // 0: НОЛЬ
-    {7, 5, 9},    // 1: ОДИН
-    {7, 10, 13},  // 2: ДВА
-    {8, 0, 3},    // 3: ТРИ
-    {8, 4, 10},   // 4: ЧЕТЫРЕ
-    {8, 11, 15},  // 5: ПЯТЬ
-};
-
-const WordPos ONES_WORDS[] = {
-    {9, 0, 4},    // 0: НОЛЬ
-    {9, 5, 9},    // 1: ОДИН
-    {9, 10, 13},  // 2: ДВА
-    {10, 0, 3},   // 3: ТРИ
-    {10, 4, 10},  // 4: ЧЕТЫРЕ
-    {10, 11, 15}, // 5: ПЯТЬ
-    {11, 0, 5},   // 6: ШЕСТЬ
-    {11, 5, 9},   // 7: СЕМЬ
-    {11, 9, 15},  // 8: ВОСЕМЬ
-    {12, 0, 6},   // 9: ДЕВЯТЬ
+// ── Nominative hours (for :00 and :35-:55 — "без X ЧАС") ──
+const WordPos HOURS_NOM[] = {
+    {0, 0, 0},       // placeholder
+    {12,  0,  3},    //  1: ЧАС
+    {12,  3,  6},    //  2: ДВА
+    {12,  6,  9},    //  3: ТРИ
+    {12,  9, 15},    //  4: ЧЕТЫРЕ
+    { 0, 10, 14},    //  5: ПЯТЬ (shared with W_PYAT)
+    {13,  0,  5},    //  6: ШЕСТЬ
+    {13,  5,  9},    //  7: СЕМЬ
+    {13,  9, 15},    //  8: ВОСЕМЬ
+    {14,  0,  6},    //  9: ДЕВЯТЬ
+    { 1,  3,  9},    // 10: ДЕСЯТЬ (shared with W_DESYAT)
+    {15,  3, 14},    // 11: ОДИННАДЦАТЬ
+    {14,  6, 16},    // 12: ДВЕНАДЦАТЬ
 };
 
 uint16_t ledIndex(uint8_t row, uint8_t col) {
+    // Serpentine: even rows L→R, odd rows R→L
     if (row % 2 == 0) return row * COLS + col;
     return row * COLS + (COLS - 1 - col);
 }
@@ -93,17 +102,78 @@ void lightWord(const WordPos& w, CRGB color) {
         leds[ledIndex(w.row, c)] = color;
 }
 
-struct ClockState { uint8_t hour12, tens, ones, is_pm; };
+uint8_t nextHour(uint8_t h) {
+    return h % 12 + 1;
+}
+
+struct ClockState { uint8_t hour12; uint8_t minute5; };
 bool operator!=(const ClockState& a, const ClockState& b) {
-    return a.hour12 != b.hour12 || a.tens != b.tens || a.ones != b.ones || a.is_pm != b.is_pm;
+    return a.hour12 != b.hour12 || a.minute5 != b.minute5;
 }
 
 void showTime(const ClockState& st) {
     fill_solid(leds, NUM_LEDS, COLOR_OFF);
-    lightWord(HOURS[st.hour12], COLOR_ON);
-    lightWord(AMPM_WORDS[st.is_pm], COLOR_ON);
-    lightWord(TENS_WORDS[st.tens], COLOR_ON);
-    lightWord(ONES_WORDS[st.ones], COLOR_ON);
+
+    uint8_t m = st.minute5;
+    uint8_t h = st.hour12;
+    uint8_t nh = nextHour(h);
+
+    if (m == 0) {
+        // :00 — just the hour
+        lightWord(HOURS_NOM[h], COLOR_ON);
+    } else if (m <= 30) {
+        // :05-:30 — "X минут СЛЕДУЮЩЕГО"
+        switch (m) {
+            case 5:
+                lightWord(W_PYAT, COLOR_ON);
+                lightWord(W_MINUT, COLOR_ON);
+                break;
+            case 10:
+                lightWord(W_DESYAT, COLOR_ON);
+                lightWord(W_MINUT, COLOR_ON);
+                break;
+            case 15:
+                lightWord(W_CHETVERT, COLOR_ON);
+                break;
+            case 20:
+                lightWord(W_DVADTSAT, COLOR_ON);
+                lightWord(W_MINUT, COLOR_ON);
+                break;
+            case 25:
+                lightWord(W_DVADTSAT, COLOR_ON);
+                lightWord(W_PYAT, COLOR_ON);
+                lightWord(W_MINUT, COLOR_ON);
+                break;
+            case 30:
+                lightWord(W_POLOVINA, COLOR_ON);
+                break;
+        }
+        lightWord(HOURS_GEN[nh], COLOR_ON);
+    } else {
+        // :35-:55 — "без X СЛЕДУЮЩИЙ"
+        lightWord(W_BEZ, COLOR_ON);
+        uint8_t to_min = 60 - m;
+        switch (to_min) {
+            case 25:
+                lightWord(W_DVADTSATI, COLOR_ON);
+                lightWord(W_PYATI, COLOR_ON);
+                break;
+            case 20:
+                lightWord(W_DVADTSATI, COLOR_ON);
+                break;
+            case 15:
+                lightWord(W_CHETVERTI, COLOR_ON);
+                break;
+            case 10:
+                lightWord(W_DESYATI, COLOR_ON);
+                break;
+            case 5:
+                lightWord(W_PYATI, COLOR_ON);
+                break;
+        }
+        lightWord(HOURS_NOM[nh], COLOR_ON);
+    }
+
     FastLED.show();
 }
 
@@ -117,13 +187,13 @@ void startupSweep() {
         leds[i] = COLOR_ON;
         if (i > 0) leds[i - 1] = COLOR_OFF;
         FastLED.show();
-        delay(10);
+        delay(8);
     }
     leds[NUM_LEDS - 1] = COLOR_OFF;
     FastLED.show();
 }
 
-ClockState lastState = {0, 0, 0, 0};
+ClockState lastState = {0, 0};
 bool firstRun = true;
 
 void setup() {
@@ -137,19 +207,18 @@ void setup() {
     configTime(GMT_OFFSET, DST_OFFSET, NTP_SERVER);
     struct tm t;
     while (!getLocalTime(&t)) delay(500);
-    Serial.println("Word Clock RU ready");
+    Serial.println("Word Clock RU v2 ready");
 }
 
 void loop() {
     struct tm t;
     if (!getLocalTime(&t)) { delay(1000); return; }
 
-    uint8_t h24 = t.tm_hour;
-    uint8_t is_pm = (h24 >= 12) ? 1 : 0;
-    uint8_t h12 = h24 % 12;
+    uint8_t h12 = t.tm_hour % 12;
     if (h12 == 0) h12 = 12;
+    uint8_t m5 = (t.tm_min / 5) * 5;
 
-    ClockState current = {h12, (uint8_t)(t.tm_min / 10), (uint8_t)(t.tm_min % 10), is_pm};
+    ClockState current = {h12, m5};
     if (firstRun || current != lastState) {
         showTime(current);
         lastState = current;

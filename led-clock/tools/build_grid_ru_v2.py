@@ -7,7 +7,7 @@ Displays time as natural Russian expressions:
   ПОЛОВИНА ДВЕНАДЦАТОГО (11:30)
   ДВАДЦАТЬ ПЯТЬ МИНУТ ШЕСТОГО (5:25)
 
-Format (rounded to 5 min):
+Format (5-min words + dot indicators for exact minutes):
   :00  [HOUR nom]
   :05  ПЯТЬ МИНУТ [HOUR+1 gen]
   :10  ДЕСЯТЬ МИНУТ [HOUR+1 gen]
@@ -21,7 +21,9 @@ Format (rounded to 5 min):
   :50  БЕЗ ДЕСЯТИ [HOUR+1 nom]
   :55  БЕЗ ПЯТИ [HOUR+1 nom]
 
-Grid: 16×16 = 256 LEDs
+  + 4 dot LEDs (256-259) below grid for +1/+2/+3/+4 minutes
+
+Grid: 16×16 = 256 LEDs + 4 dots = 260 LEDs total
 """
 
 COLS = 16
@@ -153,7 +155,7 @@ def verify():
     if errors:
         print(f"\n  {errors} ОШИБОК!")
     else:
-        print(f"\n  ✓ Всё ОК. Сетка: {ROWS}×{COLS} = {ROWS * COLS} LED")
+        print(f"\n  ✓ Всё ОК. Сетка: {ROWS}×{COLS} = {ROWS * COLS} LED + 4 dots = {ROWS * COLS + 4} LED")
     return errors == 0
 
 
@@ -162,7 +164,8 @@ def next_hour(h):
 
 
 def time_words(hour12, minute):
-    """Return (description, list of positions) for the given time rounded to 5 min."""
+    """Return (description, list of positions, dot_count) for the given time."""
+    dots = minute % 5
     minute = (minute // 5) * 5
     words = []
     parts = []
@@ -215,12 +218,14 @@ def time_words(hour12, minute):
         words.append(HOURS_NOM[nh])
         parts.append(EXPECTED_NOM[nh])
 
-    return " ".join(parts), words
+    desc = " ".join(parts)
+    if dots:
+        desc += f" +{'●' * dots}"
+    return desc, words, dots
 
 
 def visualize(hour12, minute):
-    minute_r = (minute // 5) * 5
-    desc, positions = time_words(hour12, minute)
+    desc, positions, dots = time_words(hour12, minute)
 
     active = set()
     for pos in positions:
@@ -228,7 +233,7 @@ def visualize(hour12, minute):
         for c in range(cs, ce):
             active.add((row, c))
 
-    print(f"\n  {hour12}:{minute_r:02d} → {desc}\n")
+    print(f"\n  {hour12}:{minute:02d} → {desc}\n")
     for r, row_text in enumerate(GRID):
         line = "  "
         for c, ch in enumerate(row_text):
@@ -237,6 +242,14 @@ def visualize(hour12, minute):
             else:
                 line += f"\033[90m {ch} \033[0m"
         print(line)
+    if dots:
+        dot_line = "  " + " " * 20
+        for i in range(4):
+            if i < dots:
+                dot_line += f"\033[97;42m ● \033[0m "
+            else:
+                dot_line += f"\033[90m ○ \033[0m "
+        print(dot_line)
     print()
 
 
@@ -251,17 +264,18 @@ if __name__ == "__main__":
     examples = [
         (12, 0),   # ДВЕНАДЦАТЬ
         (1, 0),    # ЧАС
+        (7, 3),    # СЕМЬ +●●●
         (5, 5),    # ПЯТЬ МИНУТ ШЕСТОГО
-        (3, 10),   # ДЕСЯТЬ МИНУТ ЧЕТВЁРТОГО
+        (3, 12),   # ДЕСЯТЬ МИНУТ ЧЕТВЁРТОГО +●●
         (7, 15),   # ЧЕТВЕРТЬ ВОСЬМОГО
-        (8, 20),   # ДВАДЦАТЬ МИНУТ ДЕВЯТОГО
+        (8, 21),   # ДВАДЦАТЬ МИНУТ ДЕВЯТОГО +●
         (5, 25),   # ДВАДЦАТЬ ПЯТЬ МИНУТ ШЕСТОГО
         (11, 30),  # ПОЛОВИНА ДВЕНАДЦАТОГО
-        (6, 35),   # БЕЗ ДВАДЦАТИ ПЯТИ СЕМЬ
+        (6, 37),   # БЕЗ ДВАДЦАТИ ПЯТИ СЕМЬ +●●
         (2, 40),   # БЕЗ ДВАДЦАТИ ТРИ
         (9, 45),   # БЕЗ ЧЕТВЕРТИ ДЕСЯТЬ
         (4, 50),   # БЕЗ ДЕСЯТИ ПЯТЬ
-        (10, 55),  # БЕЗ ПЯТИ ОДИННАДЦАТЬ
+        (10, 59),  # БЕЗ ПЯТИ ОДИННАДЦАТЬ +●●●●
     ]
     for h, m in examples:
         visualize(h, m)

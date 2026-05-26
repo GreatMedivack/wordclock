@@ -1,6 +1,6 @@
-// Word Clock RU v2 — ESP32-S3 + WS2812B (256 LEDs, 16×16 grid)
+// Word Clock RU v2 — ESP32-S3 + WS2812B (260 LEDs: 16×16 grid + 4 dots)
 // Natural Russian speech: ЧЕТВЕРТЬ ВОСЬМОГО, БЕЗ ДЕСЯТИ ТРИ
-// Time rounded to 5 minutes
+// Exact time: 5-min words + dot indicators for +1/+2/+3/+4 minutes
 
 #include <FastLED.h>
 #include <WiFi.h>
@@ -15,10 +15,18 @@ const int   DST_OFFSET    = 0;
 #define LED_PIN     48
 #define COLS        16
 #define ROWS        16
-#define NUM_LEDS    (ROWS * COLS)  // 256
+#define GRID_LEDS   (ROWS * COLS)  // 256
+#define DOT_LEDS    4
+#define NUM_LEDS    (GRID_LEDS + DOT_LEDS)  // 260
 #define BRIGHTNESS  40
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
+
+// Dot LED indices (4 LEDs after the grid, centered below)
+#define DOT_1  256
+#define DOT_2  257
+#define DOT_3  258
+#define DOT_4  259
 
 CRGB leds[NUM_LEDS];
 const CRGB COLOR_ON  = CRGB(255, 180, 80);
@@ -41,6 +49,7 @@ const CRGB COLOR_OFF = CRGB(0, 0, 0);
 // 13: ШЕСТЬСЕМЬВОСЕМЬК   ШЕСТЬ СЕМЬ ВОСЕМЬ
 // 14: ДЕВЯТЬДВЕНАДЦАТЬ   ДЕВЯТЬ ДВЕНАДЦАТЬ
 // 15: КГБОДИННАДЦАТЬДП   ОДИННАДЦАТЬ
+// Dots: LED 256-259 — 4 dots below grid for +1/+2/+3/+4 minutes
 
 struct WordPos { uint8_t row; uint8_t col_start; uint8_t col_end; };
 
@@ -106,15 +115,22 @@ uint8_t nextHour(uint8_t h) {
     return h % 12 + 1;
 }
 
-struct ClockState { uint8_t hour12; uint8_t minute5; };
+struct ClockState { uint8_t hour12; uint8_t minute; };
 bool operator!=(const ClockState& a, const ClockState& b) {
-    return a.hour12 != b.hour12 || a.minute5 != b.minute5;
+    return a.hour12 != b.hour12 || a.minute != b.minute;
+}
+
+void showDots(uint8_t count) {
+    const uint16_t dots[] = {DOT_1, DOT_2, DOT_3, DOT_4};
+    for (uint8_t i = 0; i < count && i < 4; i++)
+        leds[dots[i]] = COLOR_ON;
 }
 
 void showTime(const ClockState& st) {
     fill_solid(leds, NUM_LEDS, COLOR_OFF);
 
-    uint8_t m = st.minute5;
+    uint8_t m = (st.minute / 5) * 5;
+    uint8_t dots = st.minute % 5;
     uint8_t h = st.hour12;
     uint8_t nh = nextHour(h);
 
@@ -174,6 +190,7 @@ void showTime(const ClockState& st) {
         lightWord(HOURS_NOM[nh], COLOR_ON);
     }
 
+    showDots(dots);
     FastLED.show();
 }
 
@@ -216,9 +233,8 @@ void loop() {
 
     uint8_t h12 = t.tm_hour % 12;
     if (h12 == 0) h12 = 12;
-    uint8_t m5 = (t.tm_min / 5) * 5;
 
-    ClockState current = {h12, m5};
+    ClockState current = {h12, t.tm_min};
     if (firstRun || current != lastState) {
         showTime(current);
         lastState = current;

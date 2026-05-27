@@ -170,7 +170,7 @@ def render(hour12, minute):
                 draw.text((tx, ty), char, font=font, fill=0)
 
     cx = EPD_WIDTH // 2
-    gap = 5
+    gap = 10
     dot_positions = [
         cx - gap - DOT_SPACING - DOT_R,
         cx - gap - DOT_R,

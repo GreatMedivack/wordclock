@@ -66,9 +66,20 @@ def add_word(active, word):
 
 def active_positions(hour12, minute):
     active = set()
-    m5 = (minute // 5) * 5
-    dots = minute % 5
+    remainder = minute % 5
+    if remainder <= 2:
+        m5 = (minute // 5) * 5
+        plus_dots = remainder
+        minus_dots = 0
+    else:
+        m5 = (minute // 5) * 5 + 5
+        minus_dots = 5 - remainder
+        plus_dots = 0
+
     h = hour12
+    if m5 == 60:
+        m5 = 0
+        h = next_hour(h)
     nh = next_hour(h)
 
     if m5 == 0:
@@ -118,13 +129,25 @@ def active_positions(hour12, minute):
         add_word(active, W_PYATI)
         add_word(active, HOURS_NOM[nh])
 
-    return active, dots
+    return active, plus_dots, minus_dots
 
 
 def describe(h, m):
-    m5 = (m // 5) * 5
-    dots = m % 5
-    nh = next_hour(h)
+    remainder = m % 5
+    if remainder <= 2:
+        m5 = (m // 5) * 5
+        plus_dots = remainder
+        minus_dots = 0
+    else:
+        m5 = (m // 5) * 5 + 5
+        minus_dots = 5 - remainder
+        plus_dots = 0
+
+    hr = h
+    if m5 == 60:
+        m5 = 0
+        hr = next_hour(hr)
+    nh = next_hour(hr)
 
     gn = {1:"ПЕРВОГО",2:"ВТОРОГО",3:"ТРЕТЬЕГО",4:"ЧЕТВЁРТОГО",5:"ПЯТОГО",
           6:"ШЕСТОГО",7:"СЕДЬМОГО",8:"ВОСЬМОГО",9:"ДЕВЯТОГО",10:"ДЕСЯТОГО",
@@ -133,7 +156,7 @@ def describe(h, m):
           7:"СЕМЬ",8:"ВОСЕМЬ",9:"ДЕВЯТЬ",10:"ДЕСЯТЬ",11:"ОДИННАДЦАТЬ",12:"ДВЕНАДЦАТЬ"}
 
     phrases = {
-        0: nm[h],
+        0: nm[hr],
         5: f"ПЯТЬ МИНУТ {gn[nh]}",
         10: f"ДЕСЯТЬ МИНУТ {gn[nh]}",
         15: f"ЧЕТВЕРТЬ {gn[nh]}",
@@ -147,8 +170,10 @@ def describe(h, m):
         55: f"БЕЗ ПЯТИ {nm[nh]}",
     }
     text = phrases[m5]
-    if dots:
-        text += " " + "●" * dots
+    if minus_dots:
+        text += " −" + "●" * minus_dots
+    if plus_dots:
+        text += " +" + "●" * plus_dots
     return text
 
 
@@ -184,8 +209,10 @@ DOT_ROW_H = CELL + PAD
 TITLE_H = 48
 
 
+MINUS_COLOR = (255, 120, 80)
+
 def render_one(h, m):
-    active, dots = active_positions(h, m)
+    active, plus_dots, minus_dots = active_positions(h, m)
     total_h = TITLE_H + CLOCK_H + DOT_ROW_H
     img = Image.new("RGB", (CLOCK_W, total_h), BG_COLOR)
     draw = ImageDraw.Draw(img)
@@ -209,33 +236,44 @@ def render_one(h, m):
             fty = cy + (CELL - gh) // 2 - bbox[1]
             draw.text((ftx, fty), ch, font=font, fill=color)
 
-    # Dot row — 4 dots centered below the grid
+    # Dot row: ●● [gap] ●● — left pair = minus, right pair = plus
     dot_y = oy + CLOCK_H + DOT_ROW_H // 2
-    total_dot_w = 4 * (DOT_R * 2) + 3 * CELL // 2
-    start_x = CLOCK_W // 2 - total_dot_w // 2 + DOT_R
-    spacing = (DOT_R * 2) + CELL // 2
+    gap = CELL // 2
+    pair_spacing = DOT_R * 2 + CELL // 3
+    center_x = CLOCK_W // 2
 
-    for i in range(4):
-        dx = start_x + i * spacing
-        color = DOT_COLOR if i < dots else DIM_COLOR
+    dot_positions = [
+        center_x - gap - pair_spacing - DOT_R,
+        center_x - gap - DOT_R,
+        center_x + gap + DOT_R,
+        center_x + gap + pair_spacing + DOT_R,
+    ]
+
+    for i, dx in enumerate(dot_positions):
+        if i < 2:
+            filled = (2 - i) <= minus_dots
+            color = MINUS_COLOR if filled else DIM_COLOR
+        else:
+            filled = (i - 1) <= plus_dots
+            color = DOT_COLOR if filled else DIM_COLOR
         draw.ellipse([dx - DOT_R, dot_y - DOT_R, dx + DOT_R, dot_y + DOT_R], fill=color)
 
     return img
 
 
 SAMPLES = [
-    (12, 1),   (7, 2),    (3, 3),    (5, 4),
-    (8, 6),    (2, 7),    (11, 8),   (6, 9),
-    (1, 11),   (9, 12),   (4, 13),   (10, 14),
-    (6, 16),   (1, 17),   (12, 18),  (3, 19),
-    (7, 21),   (5, 22),   (8, 23),   (11, 24),
-    (9, 26),   (4, 27),   (2, 28),   (10, 29),
-    (12, 31),  (6, 32),   (1, 33),   (7, 34),
-    (3, 36),   (5, 37),   (8, 38),   (11, 39),
-    (2, 41),   (9, 42),   (4, 43),   (10, 44),
-    (12, 46),  (6, 47),   (1, 48),   (7, 49),
-    (3, 51),   (5, 52),   (8, 53),   (11, 54),
-    (2, 56),   (9, 57),   (4, 58),   (6, 59),
+    (12, 0),   (7, 1),    (3, 2),    (5, 3),
+    (8, 5),    (2, 7),    (11, 8),   (6, 10),
+    (1, 11),   (9, 12),   (4, 13),   (10, 15),
+    (6, 16),   (1, 17),   (12, 18),  (3, 20),
+    (7, 21),   (5, 22),   (8, 23),   (11, 25),
+    (9, 26),   (4, 27),   (2, 28),   (10, 30),
+    (12, 31),  (6, 32),   (1, 33),   (7, 35),
+    (3, 36),   (5, 37),   (8, 38),   (11, 40),
+    (2, 41),   (9, 42),   (4, 43),   (10, 45),
+    (12, 46),  (6, 47),   (1, 48),   (7, 50),
+    (3, 51),   (5, 52),   (8, 53),   (11, 55),
+    (2, 57),   (9, 58),   (4, 59),   (12, 58),
 ]
 
 GAP = 16

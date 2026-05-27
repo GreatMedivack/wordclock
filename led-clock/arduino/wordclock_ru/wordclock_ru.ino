@@ -1,6 +1,6 @@
 // Word Clock RU v2 — ESP32-S3 + WS2812B (260 LEDs: 16×16 grid + 4 dots)
 // Natural Russian speech: ЧЕТВЕРТЬ ВОСЬМОГО, БЕЗ ДЕСЯТИ ТРИ
-// Exact time: 5-min words + dot indicators for +1/+2/+3/+4 minutes
+// Nearest-5 rounding with ±2 dot indicators (left pair = minus, right pair = plus)
 
 #include <FastLED.h>
 #include <WiFi.h>
@@ -49,7 +49,7 @@ const CRGB COLOR_OFF = CRGB(0, 0, 0);
 // 13: ШЕСТЬСЕМЬВОСЕМЬК   ШЕСТЬ СЕМЬ ВОСЕМЬ
 // 14: ДЕВЯТЬДВЕНАДЦАТЬ   ДЕВЯТЬ ДВЕНАДЦАТЬ
 // 15: КГБОДИННАДЦАТЬДП   ОДИННАДЦАТЬ
-// Dots: LED 256-259 — 4 dots below grid for +1/+2/+3/+4 minutes
+// Dots: LED 256-259 — left pair (minus), right pair (plus), ±2 minutes
 
 struct WordPos { uint8_t row; uint8_t col_start; uint8_t col_end; };
 
@@ -120,25 +120,42 @@ bool operator!=(const ClockState& a, const ClockState& b) {
     return a.hour12 != b.hour12 || a.minute != b.minute;
 }
 
-void showDots(uint8_t count) {
-    const uint16_t dots[] = {DOT_1, DOT_2, DOT_3, DOT_4};
-    for (uint8_t i = 0; i < count && i < 4; i++)
-        leds[dots[i]] = COLOR_ON;
+void showDots(uint8_t minus_dots, uint8_t plus_dots) {
+    // Left pair (DOT_1, DOT_2) = minus, filled from center outward
+    if (minus_dots >= 1) leds[DOT_2] = COLOR_ON;
+    if (minus_dots >= 2) leds[DOT_1] = COLOR_ON;
+    // Right pair (DOT_3, DOT_4) = plus, filled from center outward
+    if (plus_dots >= 1)  leds[DOT_3] = COLOR_ON;
+    if (plus_dots >= 2)  leds[DOT_4] = COLOR_ON;
 }
 
 void showTime(const ClockState& st) {
     fill_solid(leds, NUM_LEDS, COLOR_OFF);
 
-    uint8_t m = (st.minute / 5) * 5;
-    uint8_t dots = st.minute % 5;
+    uint8_t remainder = st.minute % 5;
+    uint8_t m, plus_dots, minus_dots;
     uint8_t h = st.hour12;
+
+    if (remainder <= 2) {
+        m = (st.minute / 5) * 5;
+        plus_dots = remainder;
+        minus_dots = 0;
+    } else {
+        m = (st.minute / 5) * 5 + 5;
+        minus_dots = 5 - remainder;
+        plus_dots = 0;
+    }
+
+    if (m == 60) {
+        m = 0;
+        h = nextHour(h);
+    }
+
     uint8_t nh = nextHour(h);
 
     if (m == 0) {
-        // :00 — just the hour
         lightWord(HOURS_NOM[h], COLOR_ON);
     } else if (m <= 30) {
-        // :05-:30 — "X минут СЛЕДУЮЩЕГО"
         switch (m) {
             case 5:
                 lightWord(W_PYAT, COLOR_ON);
@@ -166,7 +183,6 @@ void showTime(const ClockState& st) {
         }
         lightWord(HOURS_GEN[nh], COLOR_ON);
     } else {
-        // :35-:55 — "без X СЛЕДУЮЩИЙ"
         lightWord(W_BEZ, COLOR_ON);
         uint8_t to_min = 60 - m;
         switch (to_min) {
@@ -190,7 +206,7 @@ void showTime(const ClockState& st) {
         lightWord(HOURS_NOM[nh], COLOR_ON);
     }
 
-    showDots(dots);
+    showDots(minus_dots, plus_dots);
     FastLED.show();
 }
 

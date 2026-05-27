@@ -21,7 +21,7 @@ Format (5-min words + dot indicators for exact minutes):
   :50  БЕЗ ДЕСЯТИ [HOUR+1 nom]
   :55  БЕЗ ПЯТИ [HOUR+1 nom]
 
-  + 4 dot LEDs (256-259) below grid for +1/+2/+3/+4 minutes
+  + 4 dot LEDs (256-259): left pair = minus, right pair = plus (±2 minutes)
 
 Grid: 16×16 = 256 LEDs + 4 dots = 260 LEDs total
 """
@@ -164,42 +164,55 @@ def next_hour(h):
 
 
 def time_words(hour12, minute):
-    """Return (description, list of positions, dot_count) for the given time."""
-    dots = minute % 5
-    minute = (minute // 5) * 5
+    """Return (description, list of positions, plus_dots, minus_dots) for the given time."""
+    remainder = minute % 5
+    if remainder <= 2:
+        m5 = (minute // 5) * 5
+        plus_dots = remainder
+        minus_dots = 0
+    else:
+        m5 = (minute // 5) * 5 + 5
+        minus_dots = 5 - remainder
+        plus_dots = 0
+
+    h = hour12
+    if m5 == 60:
+        m5 = 0
+        h = next_hour(h)
+
     words = []
     parts = []
 
-    if minute == 0:
-        words.append(HOURS_NOM[hour12])
-        parts.append(EXPECTED_NOM[hour12])
-    elif minute <= 30:
-        nh = next_hour(hour12)
-        if minute == 5:
+    if m5 == 0:
+        words.append(HOURS_NOM[h])
+        parts.append(EXPECTED_NOM[h])
+    elif m5 <= 30:
+        nh = next_hour(h)
+        if m5 == 5:
             words += [PYAT, MINUT]
             parts += ["ПЯТЬ", "МИНУТ"]
-        elif minute == 10:
+        elif m5 == 10:
             words += [DESYAT, MINUT]
             parts += ["ДЕСЯТЬ", "МИНУТ"]
-        elif minute == 15:
+        elif m5 == 15:
             words.append(CHETVERT)
             parts.append("ЧЕТВЕРТЬ")
-        elif minute == 20:
+        elif m5 == 20:
             words += [DVADTSAT, MINUT]
             parts += ["ДВАДЦАТЬ", "МИНУТ"]
-        elif minute == 25:
+        elif m5 == 25:
             words += [DVADTSAT, PYAT, MINUT]
             parts += ["ДВАДЦАТЬ", "ПЯТЬ", "МИНУТ"]
-        elif minute == 30:
+        elif m5 == 30:
             words.append(POLOVINA)
             parts.append("ПОЛОВИНА")
         words.append(HOURS_GEN[nh])
         parts.append(EXPECTED_GEN[nh])
     else:
-        nh = next_hour(hour12)
+        nh = next_hour(h)
         words.append(BEZ)
         parts.append("БЕЗ")
-        to_min = 60 - minute
+        to_min = 60 - m5
         if to_min == 25:
             words += [DVADTSATI, PYATI]
             parts += ["ДВАДЦАТИ", "ПЯТИ"]
@@ -219,13 +232,15 @@ def time_words(hour12, minute):
         parts.append(EXPECTED_NOM[nh])
 
     desc = " ".join(parts)
-    if dots:
-        desc += f" +{'●' * dots}"
-    return desc, words, dots
+    if minus_dots:
+        desc += f" −{'●' * minus_dots}"
+    if plus_dots:
+        desc += f" +{'●' * plus_dots}"
+    return desc, words, plus_dots, minus_dots
 
 
 def visualize(hour12, minute):
-    desc, positions, dots = time_words(hour12, minute)
+    desc, positions, plus_dots, minus_dots = time_words(hour12, minute)
 
     active = set()
     for pos in positions:
@@ -242,10 +257,18 @@ def visualize(hour12, minute):
             else:
                 line += f"\033[90m {ch} \033[0m"
         print(line)
-    if dots:
-        dot_line = "  " + " " * 20
-        for i in range(4):
-            if i < dots:
+    if minus_dots or plus_dots:
+        dot_line = "  " + " " * 16
+        # Left pair (minus, from center outward)
+        for i in range(2):
+            if (2 - i) <= minus_dots:
+                dot_line += f"\033[97;41m ● \033[0m "
+            else:
+                dot_line += f"\033[90m ○ \033[0m "
+        dot_line += "  "
+        # Right pair (plus, from center outward)
+        for i in range(2):
+            if (i + 1) <= plus_dots:
                 dot_line += f"\033[97;42m ● \033[0m "
             else:
                 dot_line += f"\033[90m ○ \033[0m "
@@ -264,18 +287,19 @@ if __name__ == "__main__":
     examples = [
         (12, 0),   # ДВЕНАДЦАТЬ
         (1, 0),    # ЧАС
-        (7, 3),    # СЕМЬ +●●●
+        (7, 2),    # СЕМЬ +●●
         (5, 5),    # ПЯТЬ МИНУТ ШЕСТОГО
-        (3, 12),   # ДЕСЯТЬ МИНУТ ЧЕТВЁРТОГО +●●
+        (3, 13),   # ЧЕТВЕРТЬ ЧЕТВЁРТОГО −●●
         (7, 15),   # ЧЕТВЕРТЬ ВОСЬМОГО
-        (8, 21),   # ДВАДЦАТЬ МИНУТ ДЕВЯТОГО +●
+        (8, 22),   # ДВАДЦАТЬ МИНУТ ДЕВЯТОГО +●●
         (5, 25),   # ДВАДЦАТЬ ПЯТЬ МИНУТ ШЕСТОГО
+        (11, 29),  # ПОЛОВИНА ДВЕНАДЦАТОГО −●
         (11, 30),  # ПОЛОВИНА ДВЕНАДЦАТОГО
-        (6, 37),   # БЕЗ ДВАДЦАТИ ПЯТИ СЕМЬ +●●
+        (6, 38),   # БЕЗ ДВАДЦАТИ СЕМЬ −●●
         (2, 40),   # БЕЗ ДВАДЦАТИ ТРИ
-        (9, 45),   # БЕЗ ЧЕТВЕРТИ ДЕСЯТЬ
+        (9, 44),   # БЕЗ ЧЕТВЕРТИ ДЕСЯТЬ −●
         (4, 50),   # БЕЗ ДЕСЯТИ ПЯТЬ
-        (10, 59),  # БЕЗ ПЯТИ ОДИННАДЦАТЬ +●●●●
+        (12, 58),  # ЧАС −●●
     ]
     for h, m in examples:
         visualize(h, m)

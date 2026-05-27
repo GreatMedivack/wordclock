@@ -1,8 +1,8 @@
 import os
 from PIL import Image, ImageDraw, ImageFont
 
-EPD_WIDTH = 250
-EPD_HEIGHT = 122
+EPD_WIDTH = 122
+EPD_HEIGHT = 250
 
 FONT_PATH = os.path.join(os.path.dirname(__file__), "fonts", "LiberationMono-Bold.ttf")
 FONT_SIZE = 7
@@ -56,14 +56,14 @@ HOURS_NOM = {
 }
 
 CELL_W = EPD_WIDTH // COLS
-CELL_H = (EPD_HEIGHT - 10) // ROWS
+CELL_H = (EPD_HEIGHT - 16) // ROWS
 GRID_W = COLS * CELL_W
 GRID_H = ROWS * CELL_H
 MARGIN_X = (EPD_WIDTH - GRID_W) // 2
-MARGIN_Y = 0
-DOT_Y = MARGIN_Y + GRID_H + 5
+MARGIN_Y = (EPD_HEIGHT - GRID_H - 16) // 2
+DOT_Y = MARGIN_Y + GRID_H + 8
 DOT_R = 3
-DOT_SPACING = 20
+DOT_SPACING = 16
 
 
 def _next_hour(h):

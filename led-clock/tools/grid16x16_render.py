@@ -179,7 +179,7 @@ def describe(h, m):
 
 CELL = 52
 PAD = 8
-FONT_SIZE = 28
+FONT_SIZE = 57
 TITLE_SIZE = 24
 DOT_R = 8
 
@@ -189,19 +189,11 @@ ON_COLOR = (255, 190, 80)
 TITLE_COLOR = (180, 180, 195)
 DOT_COLOR = (255, 190, 80)
 
-font_paths = [
-    "/usr/share/fonts/liberation-mono/LiberationMono-Bold.ttf",
-    "/usr/share/fonts/truetype/liberation/LiberationMono-Bold.ttf",
-    "fonts/LiberationMono-Bold.ttf",
-]
-font = title_font = None
-for p in font_paths:
-    try:
-        font = ImageFont.truetype(p, FONT_SIZE)
-        title_font = ImageFont.truetype(p, TITLE_SIZE)
-        break
-    except:
-        continue
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+FONT_PATH = os.path.join(script_dir, os.pardir, "arduino", "wordclock_ru", "USSRStencil.ttf")
+font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
+title_font = ImageFont.truetype(FONT_PATH, TITLE_SIZE)
 
 CLOCK_W = COLS * CELL + PAD * 2
 CLOCK_H = ROWS * CELL + PAD * 2

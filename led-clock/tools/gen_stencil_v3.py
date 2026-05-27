@@ -40,7 +40,7 @@ NUM_DOTS = 4
 PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN  # ~304mm
 
 FONT_FACE = "USSR STENCIL"
-FONT_SIZE = 10.0  # mm
+FONT_SIZE = 17.6  # mm — max inscribed in PITCH
 
 BG_COLOR = (0.08, 0.08, 0.08)
 LETTER_COLOR = (1.0, 1.0, 1.0)

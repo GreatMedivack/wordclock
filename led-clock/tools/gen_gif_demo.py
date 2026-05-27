@@ -167,7 +167,7 @@ def describe(h, m):
 
 CELL = 40
 PAD = 6
-FONT_SIZE = 22
+FONT_SIZE = 44
 LABEL_SIZE = 16
 DOT_R = 6
 

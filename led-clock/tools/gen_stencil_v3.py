@@ -126,10 +126,10 @@ def generate_svg():
 
     # Dot indicators below grid: ●● [gap] ●●
     dot_xs = [
+        MARGIN + (5 + 0.5) * PITCH,
         MARGIN + (6 + 0.5) * PITCH,
-        MARGIN + (7 + 0.5) * PITCH,
+        MARGIN + (9 + 0.5) * PITCH,
         MARGIN + (10 + 0.5) * PITCH,
-        MARGIN + (11 + 0.5) * PITCH,
     ]
 
     for dx in dot_xs:

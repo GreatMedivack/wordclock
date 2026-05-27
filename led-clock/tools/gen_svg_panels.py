@@ -74,10 +74,10 @@ def cell_center(row, col):
 
 def dot_xs():
     return [
+        cell_center(0, 5)[0],
         cell_center(0, 6)[0],
-        cell_center(0, 7)[0],
+        cell_center(0, 9)[0],
         cell_center(0, 10)[0],
-        cell_center(0, 11)[0],
     ]
 
 

@@ -232,10 +232,10 @@ def render_one(h, m):
     dot_y = oy + CLOCK_H + DOT_ROW_H // 2
 
     dot_positions = [
+        PAD + 5 * CELL + CELL // 2,
         PAD + 6 * CELL + CELL // 2,
-        PAD + 7 * CELL + CELL // 2,
+        PAD + 9 * CELL + CELL // 2,
         PAD + 10 * CELL + CELL // 2,
-        PAD + 11 * CELL + CELL // 2,
     ]
 
     for i, dx in enumerate(dot_positions):

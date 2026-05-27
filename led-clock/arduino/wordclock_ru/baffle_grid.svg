@@ -292,12 +292,12 @@
   <text x="230.05" y="263.39" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">242</text>
   <text x="246.72" y="263.39" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">241</text>
   <text x="263.39" y="263.39" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">240</text>
-  <circle cx="38.34" cy="291.72" r="3.0" fill="none" stroke="blue" stroke-width="0.15"/>
-  <text x="38.34" y="291.72" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">256</text>
-  <circle cx="105.02" cy="291.72" r="3.0" fill="none" stroke="blue" stroke-width="0.15"/>
-  <text x="105.02" y="291.72" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">257</text>
-  <circle cx="171.7" cy="291.72" r="3.0" fill="none" stroke="blue" stroke-width="0.15"/>
-  <text x="171.7" y="291.72" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">258</text>
-  <circle cx="238.38" cy="291.72" r="3.0" fill="none" stroke="blue" stroke-width="0.15"/>
-  <text x="238.38" y="291.72" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">259</text>
+  <circle cx="88.35" cy="291.72" r="3.0" fill="none" stroke="blue" stroke-width="0.15"/>
+  <text x="88.35" y="291.72" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">256</text>
+  <circle cx="113.36" cy="291.72" r="3.0" fill="none" stroke="blue" stroke-width="0.15"/>
+  <text x="113.36" y="291.72" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">257</text>
+  <circle cx="163.37" cy="291.72" r="3.0" fill="none" stroke="blue" stroke-width="0.15"/>
+  <text x="163.37" y="291.72" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">258</text>
+  <circle cx="188.37" cy="291.72" r="3.0" fill="none" stroke="blue" stroke-width="0.15"/>
+  <text x="188.37" y="291.72" font-family="monospace" font-size="3.5" fill="#999" text-anchor="middle" dominant-baseline="central">259</text>
 </svg>

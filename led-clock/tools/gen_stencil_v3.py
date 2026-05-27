@@ -33,7 +33,8 @@ PITCH = 16.67  # mm between LED centers
 MARGIN = 5.0   # mm border
 PANEL_W = MARGIN * 2 + PITCH * COLS         # 276.72mm
 DOT_ROW_Y = MARGIN + PITCH * ROWS + 20.0   # 20mm below grid
-DOT_SPACING = PITCH * 4                     # 66.68mm between dots
+DOT_PAIR_SPACING = PITCH * 1.5               # within pair
+DOT_GAP = PITCH * 3                          # between pairs
 DOT_RADIUS = 3.0                            # mm
 NUM_DOTS = 4
 PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN  # ~304mm
@@ -111,12 +112,16 @@ def generate_svg():
             ctx.set_line_width(CUT_WIDTH * 0.5)
             ctx.stroke()
 
-    # Dot indicators below grid
-    total_dots_w = (NUM_DOTS - 1) * DOT_SPACING
-    dot_start_x = PANEL_W / 2 - total_dots_w / 2
+    # Dot indicators below grid: ●● [gap] ●●
+    cx = PANEL_W / 2
+    dot_xs = [
+        cx - DOT_GAP / 2 - DOT_PAIR_SPACING,
+        cx - DOT_GAP / 2,
+        cx + DOT_GAP / 2,
+        cx + DOT_GAP / 2 + DOT_PAIR_SPACING,
+    ]
 
-    for i in range(NUM_DOTS):
-        dx = dot_start_x + i * DOT_SPACING
+    for dx in dot_xs:
         dy = DOT_ROW_Y
 
         ctx.new_path()

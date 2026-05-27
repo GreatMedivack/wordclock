@@ -27,7 +27,8 @@ MARGIN = 5.0
 PANEL_W = MARGIN * 2 + PITCH * COLS
 GRID_BOTTOM = MARGIN + PITCH * ROWS
 DOT_ROW_Y = GRID_BOTTOM + 20.0
-DOT_SPACING = PITCH * 4
+DOT_PAIR_SPACING = PITCH * 1.5
+DOT_GAP = PITCH * 3
 DOT_RADIUS = 3.0
 NUM_DOTS = 4
 PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN
@@ -49,9 +50,13 @@ def cell_center(row, col):
 
 
 def dot_positions():
-    total_w = (NUM_DOTS - 1) * DOT_SPACING
-    start_x = PANEL_W / 2 - total_w / 2
-    return [(round(start_x + i * DOT_SPACING, 2), round(DOT_ROW_Y, 2)) for i in range(NUM_DOTS)]
+    cx = PANEL_W / 2
+    return [
+        (round(cx - DOT_GAP / 2 - DOT_PAIR_SPACING, 2), round(DOT_ROW_Y, 2)),
+        (round(cx - DOT_GAP / 2, 2), round(DOT_ROW_Y, 2)),
+        (round(cx + DOT_GAP / 2, 2), round(DOT_ROW_Y, 2)),
+        (round(cx + DOT_GAP / 2 + DOT_PAIR_SPACING, 2), round(DOT_ROW_Y, 2)),
+    ]
 
 
 def led_index(row, col):

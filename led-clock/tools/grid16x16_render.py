@@ -238,7 +238,7 @@ def render_one(h, m):
 
     # Dot row: ●● [gap] ●● — left pair = minus, right pair = plus
     dot_y = oy + CLOCK_H + DOT_ROW_H // 2
-    gap = CELL // 2
+    gap = CELL
     pair_spacing = DOT_R * 2 + CELL // 3
     center_x = CLOCK_W // 2
 

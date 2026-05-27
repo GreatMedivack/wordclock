@@ -28,11 +28,12 @@ led-clock/                 — LED-часы (основной проект)
   concepts/                — концепт-рендеры
   pitch/                   — презентация проекта
 
-clock_ru.py                — e-paper часы (тестовый стенд)
-renderer_ru.py             — рендерер для e-paper дисплея
-epd_driver.py              — драйвер Waveshare 2.13" e-Paper V4
-time_source.py             — источник времени (RTC / system fallback)
-deploy/                    — скрипты развёртывания на Raspberry Pi
+epaper/                    — e-paper тестовый стенд (Pi Zero W)
+  clock_ru.py              — главный цикл
+  renderer_ru.py           — рендерер для e-paper дисплея
+  epd_driver.py            — драйвер Waveshare 2.13" e-Paper V4
+  time_source.py           — источник времени (RTC / system fallback)
+  deploy/                  — скрипты развёртывания на Raspberry Pi
 ```
 
 ## LED-часы (основной)
@@ -51,7 +52,7 @@ Raspberry Pi Zero W + Waveshare 2.13" e-Paper HAT V4. Используется �
 
 ```bash
 # Деплой на Pi
-./deploy/prepare-sd.sh /media/$USER
+./epaper/deploy/prepare-sd.sh /media/$USER
 # Или через SSH
-./install.sh
+./epaper/install.sh
 ```

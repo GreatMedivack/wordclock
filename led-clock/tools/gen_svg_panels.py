@@ -33,9 +33,7 @@ MARGIN = 5.0
 PANEL_W = MARGIN * 2 + PITCH * COLS
 GRID_BOTTOM = MARGIN + PITCH * ROWS
 DOT_ROW_Y = GRID_BOTTOM + 20.0
-DOT_PAIR_SPACING = PITCH * 1.5
-DOT_GAP = PITCH * 3
-DOT_RADIUS = 3.0
+DOT_RADIUS = 5.0
 NUM_DOTS = 4
 PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN
 
@@ -75,12 +73,11 @@ def cell_center(row, col):
 
 
 def dot_xs():
-    cx = PANEL_W / 2
     return [
-        cx - DOT_GAP / 2 - DOT_PAIR_SPACING,
-        cx - DOT_GAP / 2,
-        cx + DOT_GAP / 2,
-        cx + DOT_GAP / 2 + DOT_PAIR_SPACING,
+        cell_center(0, 6)[0],
+        cell_center(0, 7)[0],
+        cell_center(0, 10)[0],
+        cell_center(0, 11)[0],
     ]
 
 

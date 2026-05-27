@@ -169,7 +169,7 @@ CELL = 40
 PAD = 6
 FONT_SIZE = 44
 LABEL_SIZE = 16
-DOT_R = 6
+DOT_R = 12
 
 BG = (12, 12, 15)
 DIM = (35, 35, 42)
@@ -217,15 +217,12 @@ def render_frame(hour12, minute):
             draw.text((ftx, fty), ch, font=font, fill=color)
 
     dot_y = oy + CLOCK_H + DOT_ROW_H // 2
-    gap = CELL
-    pair_sp = DOT_R * 2 + CELL // 3
-    center_x = IMG_W // 2
 
     dot_positions = [
-        center_x - gap - pair_sp - DOT_R,
-        center_x - gap - DOT_R,
-        center_x + gap + DOT_R,
-        center_x + gap + pair_sp + DOT_R,
+        PAD + 6 * CELL + CELL // 2,
+        PAD + 7 * CELL + CELL // 2,
+        PAD + 10 * CELL + CELL // 2,
+        PAD + 11 * CELL + CELL // 2,
     ]
 
     for i, dx in enumerate(dot_positions):

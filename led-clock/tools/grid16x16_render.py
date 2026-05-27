@@ -181,7 +181,7 @@ CELL = 52
 PAD = 8
 FONT_SIZE = 57
 TITLE_SIZE = 24
-DOT_R = 8
+DOT_R = 16
 
 BG_COLOR = (15, 15, 18)
 DIM_COLOR = (45, 45, 55)
@@ -230,15 +230,12 @@ def render_one(h, m):
 
     # Dot row: ●● [gap] ●● — left pair = minus, right pair = plus
     dot_y = oy + CLOCK_H + DOT_ROW_H // 2
-    gap = CELL
-    pair_spacing = DOT_R * 2 + CELL // 3
-    center_x = CLOCK_W // 2
 
     dot_positions = [
-        center_x - gap - pair_spacing - DOT_R,
-        center_x - gap - DOT_R,
-        center_x + gap + DOT_R,
-        center_x + gap + pair_spacing + DOT_R,
+        PAD + 6 * CELL + CELL // 2,
+        PAD + 7 * CELL + CELL // 2,
+        PAD + 10 * CELL + CELL // 2,
+        PAD + 11 * CELL + CELL // 2,
     ]
 
     for i, dx in enumerate(dot_positions):

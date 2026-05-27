@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Generate animated GIF: word clock 13:00–14:00 with warm letter highlights."""
+"""Generate animated GIF: full 12-hour word clock demo, 2s per frame."""
 
+import os
 from PIL import Image, ImageDraw, ImageFont
 
 GRID = [
@@ -119,56 +120,106 @@ def active_positions(hour12, minute):
     return active, plus_dots, minus_dots
 
 
+def describe(h, m):
+    remainder = m % 5
+    if remainder <= 2:
+        m5 = (m // 5) * 5
+        plus_dots = remainder
+        minus_dots = 0
+    else:
+        m5 = (m // 5) * 5 + 5
+        minus_dots = 5 - remainder
+        plus_dots = 0
+
+    hr = h
+    if m5 == 60:
+        m5 = 0
+        hr = next_hour(hr)
+    nh = next_hour(hr)
+
+    gn = {1:"ПЕРВОГО",2:"ВТОРОГО",3:"ТРЕТЬЕГО",4:"ЧЕТВЁРТОГО",5:"ПЯТОГО",
+          6:"ШЕСТОГО",7:"СЕДЬМОГО",8:"ВОСЬМОГО",9:"ДЕВЯТОГО",10:"ДЕСЯТОГО",
+          11:"ОДИННАДЦАТОГО",12:"ДВЕНАДЦАТОГО"}
+    nm = {1:"ЧАС",2:"ДВА",3:"ТРИ",4:"ЧЕТЫРЕ",5:"ПЯТЬ",6:"ШЕСТЬ",
+          7:"СЕМЬ",8:"ВОСЕМЬ",9:"ДЕВЯТЬ",10:"ДЕСЯТЬ",11:"ОДИННАДЦАТЬ",12:"ДВЕНАДЦАТЬ"}
+
+    phrases = {
+        0: nm[hr],
+        5: f"ПЯТЬ МИНУТ {gn[nh]}",
+        10: f"ДЕСЯТЬ МИНУТ {gn[nh]}",
+        15: f"ЧЕТВЕРТЬ {gn[nh]}",
+        20: f"ДВАДЦАТЬ МИНУТ {gn[nh]}",
+        25: f"ДВАДЦАТЬ ПЯТЬ МИНУТ {gn[nh]}",
+        30: f"ПОЛОВИНА {gn[nh]}",
+        35: f"БЕЗ ДВАДЦАТИ ПЯТИ {nm[nh]}",
+        40: f"БЕЗ ДВАДЦАТИ {nm[nh]}",
+        45: f"БЕЗ ЧЕТВЕРТИ {nm[nh]}",
+        50: f"БЕЗ ДЕСЯТИ {nm[nh]}",
+        55: f"БЕЗ ПЯТИ {nm[nh]}",
+    }
+    text = phrases[m5]
+    if minus_dots:
+        text += " −" + "●" * minus_dots
+    if plus_dots:
+        text += " +" + "●" * plus_dots
+    return text
+
+
 CELL = 40
 PAD = 6
 FONT_SIZE = 22
+LABEL_SIZE = 16
 DOT_R = 6
 
 BG = (12, 12, 15)
 DIM = (35, 35, 42)
 ON = (255, 180, 60)
 MINUS_CLR = (255, 120, 70)
+LABEL_CLR = (140, 140, 155)
 
 CLOCK_W = COLS * CELL + PAD * 2
 CLOCK_H = ROWS * CELL + PAD * 2
 DOT_ROW_H = CELL
-IMG_H = CLOCK_H + DOT_ROW_H
+LABEL_H = 36
+IMG_W = CLOCK_W
+IMG_H = LABEL_H + CLOCK_H + DOT_ROW_H
 
-font_paths = [
-    "/usr/share/fonts/liberation-mono/LiberationMono-Bold.ttf",
-    "/usr/share/fonts/truetype/liberation/LiberationMono-Bold.ttf",
-    "fonts/LiberationMono-Bold.ttf",
-]
-font = None
-for p in font_paths:
-    try:
-        font = ImageFont.truetype(p, FONT_SIZE)
-        break
-    except Exception:
-        continue
+script_dir = os.path.dirname(os.path.abspath(__file__))
+repo_root = os.path.dirname(os.path.dirname(script_dir))
+
+FONT_PATH = os.path.join(script_dir, os.pardir, "arduino", "wordclock_ru", "USSRStencil.ttf")
+font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
+label_font = ImageFont.truetype(FONT_PATH, LABEL_SIZE)
 
 
 def render_frame(hour12, minute):
     active, plus_dots, minus_dots = active_positions(hour12, minute)
-    img = Image.new("RGB", (CLOCK_W, IMG_H), BG)
+    img = Image.new("RGB", (IMG_W, IMG_H), BG)
     draw = ImageDraw.Draw(img)
 
+    label = f"{hour12}:{minute:02d}  {describe(hour12, minute)}"
+    bbox = label_font.getbbox(label)
+    lw = bbox[2] - bbox[0]
+    tx = max(PAD, (IMG_W - lw) // 2)
+    draw.text((tx, 10), label, font=label_font, fill=LABEL_CLR)
+
+    oy = LABEL_H
     for ri, row_text in enumerate(GRID):
         for ci, ch in enumerate(row_text):
             cx = PAD + ci * CELL
-            cy = PAD + ri * CELL
+            cy = oy + PAD + ri * CELL
             color = ON if (ri, ci) in active else DIM
             bbox = font.getbbox(ch)
             gw = bbox[2] - bbox[0]
             gh = bbox[3] - bbox[1]
-            tx = cx + (CELL - gw) // 2
-            ty = cy + (CELL - gh) // 2 - bbox[1]
-            draw.text((tx, ty), ch, font=font, fill=color)
+            ftx = cx + (CELL - gw) // 2
+            fty = cy + (CELL - gh) // 2 - bbox[1]
+            draw.text((ftx, fty), ch, font=font, fill=color)
 
-    dot_y = CLOCK_H + DOT_ROW_H // 2
+    dot_y = oy + CLOCK_H + DOT_ROW_H // 2
     gap = CELL
     pair_sp = DOT_R * 2 + CELL // 3
-    center_x = CLOCK_W // 2
+    center_x = IMG_W // 2
 
     dot_positions = [
         center_x - gap - pair_sp - DOT_R,
@@ -189,34 +240,22 @@ def render_frame(hour12, minute):
     return img
 
 
-frames_1h = []
-for minute in range(60):
-    h12 = 1
-    frames_1h.append(render_frame(h12, minute))
-frames_1h.append(render_frame(2, 0))
+if __name__ == "__main__":
+    out_dir = os.path.join(script_dir, os.pardir)
+    out_path = os.path.normpath(os.path.join(out_dir, "wordclock_12h_demo.gif"))
 
-out_1h = "/home/medivack/Downloads/wordclock_13_14.gif"
-frames_1h[0].save(
-    out_1h,
-    save_all=True,
-    append_images=frames_1h[1:],
-    duration=500,
-    loop=0,
-)
-print(f"Done: {out_1h}  ({CLOCK_W}×{IMG_H}px, {len(frames_1h)} frames)")
+    frames = []
+    for h12 in range(1, 13):
+        for minute in range(60):
+            frames.append(render_frame(h12, minute))
+            print(f"\r  rendering {h12}:{minute:02d}  ({len(frames)}/720)", end="", flush=True)
 
-frames_12h = []
-for h12 in range(1, 13):
-    for minute in range(60):
-        frames_12h.append(render_frame(h12, minute))
-frames_12h.append(render_frame(1, 0))
-
-out_12h = "/home/medivack/Downloads/wordclock_12h.gif"
-frames_12h[0].save(
-    out_12h,
-    save_all=True,
-    append_images=frames_12h[1:],
-    duration=450,
-    loop=0,
-)
-print(f"Done: {out_12h}  ({CLOCK_W}×{IMG_H}px, {len(frames_12h)} frames)")
+    print(f"\n  saving {len(frames)} frames to {out_path} ...")
+    frames[0].save(
+        out_path,
+        save_all=True,
+        append_images=frames[1:],
+        duration=2000,
+        loop=0,
+    )
+    print(f"Done: {out_path}  ({IMG_W}×{IMG_H}px, {len(frames)} frames, 2s/frame)")

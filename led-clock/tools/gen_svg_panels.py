@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Regenerate panel_front.svg, baffle_grid.svg, cutting_template.svg with dot row."""
+"""Regenerate panel_front.svg, baffle_grid.svg, cutting_template.svg with dot row.
+
+Uses Cairo to convert text to paths so USSR STENCIL font is embedded.
+"""
+
+import cairo
+import math
 
 GRID = [
     "ГДВАДЦАТЬГПЯТЬГЖ",
@@ -33,6 +39,13 @@ DOT_RADIUS = 3.0
 NUM_DOTS = 4
 PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN
 
+FONT_FACE = "USSR STENCIL"
+FONT_SIZE = 10.0
+MONO_FACE = "monospace"
+MONO_SIZE = 3.5
+
+MM_TO_PT = 72.0 / 25.4
+
 ACTIVE = set()
 _WORD_RANGES = [
     (0, 1, 9), (0, 10, 14),
@@ -58,18 +71,16 @@ for row, cs, ce in _WORD_RANGES:
 
 
 def cell_center(row, col):
-    x = MARGIN + (col + 0.5) * PITCH
-    y = MARGIN + (row + 0.5) * PITCH
-    return round(x, 2), round(y, 2)
+    return MARGIN + (col + 0.5) * PITCH, MARGIN + (row + 0.5) * PITCH
 
 
-def dot_positions():
+def dot_xs():
     cx = PANEL_W / 2
     return [
-        (round(cx - DOT_GAP / 2 - DOT_PAIR_SPACING, 2), round(DOT_ROW_Y, 2)),
-        (round(cx - DOT_GAP / 2, 2), round(DOT_ROW_Y, 2)),
-        (round(cx + DOT_GAP / 2, 2), round(DOT_ROW_Y, 2)),
-        (round(cx + DOT_GAP / 2 + DOT_PAIR_SPACING, 2), round(DOT_ROW_Y, 2)),
+        cx - DOT_GAP / 2 - DOT_PAIR_SPACING,
+        cx - DOT_GAP / 2,
+        cx + DOT_GAP / 2,
+        cx + DOT_GAP / 2 + DOT_PAIR_SPACING,
     ]
 
 
@@ -80,127 +91,210 @@ def led_index(row, col):
         return row * 16 + (15 - col)
 
 
-def generate_panel_front():
-    lines = []
-    lines.append('<?xml version="1.0" encoding="UTF-8"?>')
-    lines.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{PANEL_W}mm" height="{PANEL_H:.2f}mm" viewBox="0 0 {PANEL_W} {PANEL_H:.2f}">')
-    lines.append(f'  <rect width="{PANEL_W}" height="{PANEL_H:.2f}" fill="#1a1a1a"/>')
-    lines.append(f'  <rect x="0" y="0" width="{PANEL_W}" height="{PANEL_H:.2f}" fill="none" stroke="red" stroke-width="0.2"/>')
-
+def _draw_grid_lines(ctx, ox=0):
+    ctx.set_source_rgb(0.2, 0.2, 0.2)
+    ctx.set_line_width(0.1)
     for r in range(ROWS + 1):
         y = MARGIN + r * PITCH
-        lines.append(f'  <line x1="{MARGIN}" y1="{y}" x2="{PANEL_W - MARGIN}" y2="{y}" stroke="#333" stroke-width="0.1"/>')
+        ctx.move_to(ox + MARGIN, y)
+        ctx.line_to(ox + PANEL_W - MARGIN, y)
+        ctx.stroke()
     for c in range(COLS + 1):
-        x = MARGIN + c * PITCH
-        lines.append(f'  <line x1="{x}" y1="{MARGIN}" x2="{x}" y2="{GRID_BOTTOM}" stroke="#333" stroke-width="0.1"/>')
+        x = ox + MARGIN + c * PITCH
+        ctx.move_to(x, MARGIN)
+        ctx.line_to(x, GRID_BOTTOM)
+        ctx.stroke()
 
-    font = 'font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8"'
-    anchor = 'text-anchor="middle" dominant-baseline="central"'
+
+def _draw_text_centered(ctx, cx, cy, ch):
+    ext = ctx.text_extents(ch)
+    x = cx - ext.width / 2 - ext.x_bearing
+    y = cy - ext.height / 2 - ext.y_bearing
+    ctx.move_to(x, y)
+    ctx.text_path(ch)
+
+
+def generate_panel_front(path):
+    surface = cairo.SVGSurface(path, PANEL_W * MM_TO_PT, PANEL_H * MM_TO_PT)
+    ctx = cairo.Context(surface)
+    ctx.scale(MM_TO_PT, MM_TO_PT)
+
+    ctx.set_source_rgb(0.1, 0.1, 0.1)
+    ctx.rectangle(0, 0, PANEL_W, PANEL_H)
+    ctx.fill()
+
+    ctx.set_source_rgb(0.8, 0, 0)
+    ctx.set_line_width(0.2)
+    ctx.rectangle(0, 0, PANEL_W, PANEL_H)
+    ctx.stroke()
+
+    _draw_grid_lines(ctx)
+
+    ctx.select_font_face(FONT_FACE, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+    ctx.set_font_size(FONT_SIZE)
+
     for r in range(ROWS):
         for c in range(COLS):
             cx, cy = cell_center(r, c)
-            ch = GRID[r][c]
-            fill = "white" if (r, c) in ACTIVE else "#555"
-            lines.append(f'  <text x="{cx}" y="{cy}" {font} fill="{fill}" {anchor}>{ch}</text>')
+            _draw_text_centered(ctx, cx, cy, GRID[r][c])
+            if (r, c) in ACTIVE:
+                ctx.set_source_rgb(1, 1, 1)
+            else:
+                ctx.set_source_rgb(0.33, 0.33, 0.33)
+            ctx.fill()
 
-    for dx, dy in dot_positions():
-        lines.append(f'  <circle cx="{dx}" cy="{dy}" r="{DOT_RADIUS}" fill="white" stroke="#333" stroke-width="0.1"/>')
+    for dx in dot_xs():
+        ctx.arc(dx, DOT_ROW_Y, DOT_RADIUS, 0, 2 * math.pi)
+        ctx.set_source_rgb(1, 1, 1)
+        ctx.fill_preserve()
+        ctx.set_source_rgb(0.2, 0.2, 0.2)
+        ctx.set_line_width(0.1)
+        ctx.stroke()
 
-    lines.append('</svg>')
-    return '\n'.join(lines)
+    surface.finish()
 
 
-def generate_baffle_grid():
-    lines = []
-    lines.append('<?xml version="1.0" encoding="UTF-8"?>')
-    lines.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{PANEL_W}mm" height="{PANEL_H:.2f}mm" viewBox="0 0 {PANEL_W} {PANEL_H:.2f}">')
-    lines.append(f'  <rect width="{PANEL_W}" height="{PANEL_H:.2f}" fill="white"/>')
-    lines.append(f'  <rect x="0" y="0" width="{PANEL_W}" height="{PANEL_H:.2f}" fill="none" stroke="red" stroke-width="0.2"/>')
+def generate_baffle_grid(path):
+    surface = cairo.SVGSurface(path, PANEL_W * MM_TO_PT, PANEL_H * MM_TO_PT)
+    ctx = cairo.Context(surface)
+    ctx.scale(MM_TO_PT, MM_TO_PT)
 
+    ctx.set_source_rgb(1, 1, 1)
+    ctx.rectangle(0, 0, PANEL_W, PANEL_H)
+    ctx.fill()
+
+    ctx.set_source_rgb(0.8, 0, 0)
+    ctx.set_line_width(0.2)
+    ctx.rectangle(0, 0, PANEL_W, PANEL_H)
+    ctx.stroke()
+
+    ctx.set_source_rgb(0, 0, 1)
+    ctx.set_line_width(0.15)
     for r in range(ROWS + 1):
         y = MARGIN + r * PITCH
-        lines.append(f'  <line x1="{MARGIN}" y1="{y}" x2="{PANEL_W - MARGIN}" y2="{y}" stroke="blue" stroke-width="0.15"/>')
+        ctx.move_to(MARGIN, y)
+        ctx.line_to(PANEL_W - MARGIN, y)
+        ctx.stroke()
     for c in range(COLS + 1):
         x = MARGIN + c * PITCH
-        lines.append(f'  <line x1="{x}" y1="{MARGIN}" x2="{x}" y2="{GRID_BOTTOM}" stroke="blue" stroke-width="0.15"/>')
+        ctx.move_to(x, MARGIN)
+        ctx.line_to(x, GRID_BOTTOM)
+        ctx.stroke()
 
-    font = 'font-family="monospace" font-size="3.5" fill="#999"'
-    anchor = 'text-anchor="middle" dominant-baseline="central"'
+    ctx.select_font_face(MONO_FACE, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+    ctx.set_font_size(MONO_SIZE)
+    ctx.set_source_rgb(0.6, 0.6, 0.6)
+
     for r in range(ROWS):
         for c in range(COLS):
             cx, cy = cell_center(r, c)
-            idx = led_index(r, c)
-            lines.append(f'  <text x="{cx}" y="{cy}" {font} {anchor}>{idx}</text>')
+            idx = str(led_index(r, c))
+            _draw_text_centered(ctx, cx, cy, idx)
+            ctx.fill()
 
-    for i, (dx, dy) in enumerate(dot_positions()):
-        idx = 256 + i
-        lines.append(f'  <circle cx="{dx}" cy="{dy}" r="{DOT_RADIUS}" fill="none" stroke="blue" stroke-width="0.15"/>')
-        lines.append(f'  <text x="{dx}" y="{dy}" {font} {anchor}>{idx}</text>')
+    for i, dx in enumerate(dot_xs()):
+        ctx.arc(dx, DOT_ROW_Y, DOT_RADIUS, 0, 2 * math.pi)
+        ctx.set_source_rgb(0, 0, 1)
+        ctx.set_line_width(0.15)
+        ctx.stroke()
+        idx = str(256 + i)
+        _draw_text_centered(ctx, dx, DOT_ROW_Y, idx)
+        ctx.set_source_rgb(0.6, 0.6, 0.6)
+        ctx.fill()
 
-    lines.append('</svg>')
-    return '\n'.join(lines)
+    surface.finish()
 
 
-def generate_cutting_template():
+def generate_cutting_template(path):
     GAP = 10.0
     TOTAL_W = PANEL_W * 2 + GAP
-    lines = []
-    lines.append('<?xml version="1.0" encoding="UTF-8"?>')
-    lines.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{TOTAL_W}mm" height="{PANEL_H:.2f}mm" viewBox="0 0 {TOTAL_W} {PANEL_H:.2f}">')
-    lines.append(f'  <rect width="{TOTAL_W}" height="{PANEL_H:.2f}" fill="#f5f5f5"/>')
 
-    offsets = [0, PANEL_W + GAP]
+    surface = cairo.SVGSurface(path, TOTAL_W * MM_TO_PT, PANEL_H * MM_TO_PT)
+    ctx = cairo.Context(surface)
+    ctx.scale(MM_TO_PT, MM_TO_PT)
 
-    # Left panel: front view (dark, letters)
-    ox = offsets[0]
-    lines.append(f'  <rect x="{ox}" y="0" width="{PANEL_W}" height="{PANEL_H:.2f}" fill="#1a1a1a"/>')
-    lines.append(f'  <rect x="{ox}" y="0" width="{PANEL_W}" height="{PANEL_H:.2f}" fill="none" stroke="red" stroke-width="0.2"/>')
+    ctx.set_source_rgb(0.96, 0.96, 0.96)
+    ctx.rectangle(0, 0, TOTAL_W, PANEL_H)
+    ctx.fill()
 
-    for r in range(ROWS + 1):
-        y = MARGIN + r * PITCH
-        lines.append(f'  <line x1="{ox + MARGIN}" y1="{y}" x2="{ox + PANEL_W - MARGIN}" y2="{y}" stroke="#333" stroke-width="0.1"/>')
-    for c in range(COLS + 1):
-        x = ox + MARGIN + c * PITCH
-        lines.append(f'  <line x1="{x}" y1="{MARGIN}" x2="{x}" y2="{GRID_BOTTOM}" stroke="#333" stroke-width="0.1"/>')
+    # Left: front view
+    ox = 0
+    ctx.set_source_rgb(0.1, 0.1, 0.1)
+    ctx.rectangle(ox, 0, PANEL_W, PANEL_H)
+    ctx.fill()
+    ctx.set_source_rgb(0.8, 0, 0)
+    ctx.set_line_width(0.2)
+    ctx.rectangle(ox, 0, PANEL_W, PANEL_H)
+    ctx.stroke()
 
-    font = 'font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="8"'
-    anchor = 'text-anchor="middle" dominant-baseline="central"'
+    _draw_grid_lines(ctx, ox)
+
+    ctx.select_font_face(FONT_FACE, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+    ctx.set_font_size(FONT_SIZE)
+
     for r in range(ROWS):
         for c in range(COLS):
             cx, cy = cell_center(r, c)
-            ch = GRID[r][c]
-            fill = "white" if (r, c) in ACTIVE else "#555"
-            lines.append(f'  <text x="{ox + cx}" y="{cy}" {font} fill="{fill}" {anchor}>{ch}</text>')
+            _draw_text_centered(ctx, ox + cx, cy, GRID[r][c])
+            if (r, c) in ACTIVE:
+                ctx.set_source_rgb(1, 1, 1)
+            else:
+                ctx.set_source_rgb(0.33, 0.33, 0.33)
+            ctx.fill()
 
-    for dx, dy in dot_positions():
-        lines.append(f'  <circle cx="{ox + dx}" cy="{dy}" r="{DOT_RADIUS}" fill="white" stroke="#333" stroke-width="0.1"/>')
+    for dx in dot_xs():
+        ctx.arc(ox + dx, DOT_ROW_Y, DOT_RADIUS, 0, 2 * math.pi)
+        ctx.set_source_rgb(1, 1, 1)
+        ctx.fill_preserve()
+        ctx.set_source_rgb(0.2, 0.2, 0.2)
+        ctx.set_line_width(0.1)
+        ctx.stroke()
 
-    # Right panel: back view (white, LED indices)
-    ox = offsets[1]
-    lines.append(f'  <rect x="{ox}" y="0" width="{PANEL_W}" height="{PANEL_H:.2f}" fill="white"/>')
-    lines.append(f'  <rect x="{ox}" y="0" width="{PANEL_W}" height="{PANEL_H:.2f}" fill="none" stroke="red" stroke-width="0.2"/>')
+    # Right: baffle (LED indices)
+    ox = PANEL_W + GAP
+    ctx.set_source_rgb(1, 1, 1)
+    ctx.rectangle(ox, 0, PANEL_W, PANEL_H)
+    ctx.fill()
+    ctx.set_source_rgb(0.8, 0, 0)
+    ctx.set_line_width(0.2)
+    ctx.rectangle(ox, 0, PANEL_W, PANEL_H)
+    ctx.stroke()
 
+    ctx.set_source_rgb(0, 0, 1)
+    ctx.set_line_width(0.15)
     for r in range(ROWS + 1):
         y = MARGIN + r * PITCH
-        lines.append(f'  <line x1="{ox + MARGIN}" y1="{y}" x2="{ox + PANEL_W - MARGIN}" y2="{y}" stroke="blue" stroke-width="0.15"/>')
+        ctx.move_to(ox + MARGIN, y)
+        ctx.line_to(ox + PANEL_W - MARGIN, y)
+        ctx.stroke()
     for c in range(COLS + 1):
         x = ox + MARGIN + c * PITCH
-        lines.append(f'  <line x1="{x}" y1="{MARGIN}" x2="{x}" y2="{GRID_BOTTOM}" stroke="blue" stroke-width="0.15"/>')
+        ctx.move_to(x, MARGIN)
+        ctx.line_to(x, GRID_BOTTOM)
+        ctx.stroke()
 
-    mono = 'font-family="monospace" font-size="3.5" fill="#999"'
+    ctx.select_font_face(MONO_FACE, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+    ctx.set_font_size(MONO_SIZE)
+    ctx.set_source_rgb(0.6, 0.6, 0.6)
+
     for r in range(ROWS):
         for c in range(COLS):
             cx, cy = cell_center(r, c)
-            idx = led_index(r, c)
-            lines.append(f'  <text x="{ox + cx}" y="{cy}" {mono} {anchor}>{idx}</text>')
+            idx = str(led_index(r, c))
+            _draw_text_centered(ctx, ox + cx, cy, idx)
+            ctx.fill()
 
-    for i, (dx, dy) in enumerate(dot_positions()):
-        idx = 256 + i
-        lines.append(f'  <circle cx="{ox + dx}" cy="{dy}" r="{DOT_RADIUS}" fill="none" stroke="blue" stroke-width="0.15"/>')
-        lines.append(f'  <text x="{ox + dx}" y="{dy}" {mono} {anchor}>{idx}</text>')
+    for i, dx in enumerate(dot_xs()):
+        ctx.arc(ox + dx, DOT_ROW_Y, DOT_RADIUS, 0, 2 * math.pi)
+        ctx.set_source_rgb(0, 0, 1)
+        ctx.set_line_width(0.15)
+        ctx.stroke()
+        idx = str(256 + i)
+        _draw_text_centered(ctx, ox + dx, DOT_ROW_Y, idx)
+        ctx.set_source_rgb(0.6, 0.6, 0.6)
+        ctx.fill()
 
-    lines.append('</svg>')
-    return '\n'.join(lines)
+    surface.finish()
 
 
 if __name__ == "__main__":
@@ -210,9 +304,7 @@ if __name__ == "__main__":
                       ("baffle_grid.svg", generate_baffle_grid),
                       ("cutting_template.svg", generate_cutting_template)]:
         path = f"{base}/{name}"
-        content = gen()
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(content)
-        print(f"  {name}: {PANEL_W:.2f} × {PANEL_H:.2f} mm")
+        gen(path)
+        print(f"  {name}: {PANEL_W:.2f} x {PANEL_H:.2f} mm")
 
     print(f"\nAll SVGs updated with {NUM_DOTS} dot indicators below grid.")

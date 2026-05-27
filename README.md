@@ -1,57 +1,57 @@
-# Word Clock
+# Словесные часы / Word Clock RU
 
-Kisai-style word clock that displays time on a character grid. Active words (hour, minutes, AM/PM) are highlighted with inverted colors (white on black).
+Настенные часы, которые показывают время словами на русском языке. 260 светодиодов WS2812B (сетка 16×16 + 4 точки для дополнительных минут), управляемых ESP32-S3 через WiFi/NTP.
 
-![preview showing 3:47 PM](preview_4x.png)
+![12-часовая демонстрация](led-clock/wordclock_12h_demo.gif)
 
-```
-O N E  T W O  T H R E E
-F O U R  F I V E  S I X
-S E V E N  E I G H T
-N I N E  T E N  E L E V E N
-A M  T W E L V E  P M  HOUR
-ZERO  ONE  TWO
-THREE  FOUR  FIVE
-ZERO  ONE  TWO
-THREE  FOUR  FIVE
-SIX  SEVEN  EIGHT
-NINE  WORD  CLOCK
-```
+## Как читать время
 
-## Hardware
+Часы подсвечивают русские слова, складывающиеся в естественную фразу:
 
-- **Raspberry Pi Zero W** — BCM2835, WiFi, USB OTG
-- **Waveshare 2.13" e-Paper HAT V4** — SSD1680, 250x122px, 1-bit B/W, SPI
-- **PCF8523 RTC** — I2C real-time clock with battery backup (optional, falls back to system time)
+| Время | Фраза |
+|-------|-------|
+| 1:00 | ЧАС |
+| 2:15 | ЧЕТВЕРТЬ ТРЕТЬЕГО |
+| 5:30 | ПОЛОВИНА ШЕСТОГО |
+| 7:45 | БЕЗ ЧЕТВЕРТИ ВОСЕМЬ |
+| 11:55 | БЕЗ ПЯТИ ДВЕНАДЦАТЬ |
 
-## Software
+4 точки под сеткой показывают остаток минут (±2) сверх ближайшей пятиминутки.
 
-- **Python 3** with Pillow for 1-bit image rendering
-- **Silkscreen** pixel font (Bold, 12px)
-- **Waveshare e-Paper** driver library
-- **Adafruit Blinka + CircuitPython PCF8523** for RTC
-- **systemd** service for autostart
-- Polls every 5s, partial e-paper refresh on minute change, full refresh every 30 cycles to prevent ghosting
-
-## Structure
+## Структура
 
 ```
-clock.py           — main loop: poll time every 5s, render and display on change
-renderer.py        — 11x15 character grid rendering to 250x122 PIL Image
-epd_driver.py      — Waveshare e-Paper HAT V4 wrapper with partial/full refresh
-time_source.py     — PCF8523 RTC with system time fallback
-wordclock.service  — systemd unit
-requirements.txt   — Python dependencies
-fonts/             — Silkscreen Bold/Regular .ttf
-deploy/            — SD card bootstrap scripts (prepare-sd.sh, firstboot.sh)
+led-clock/                 — LED-часы (основной проект)
+  arduino/wordclock_ru/    — прошивка ESP32 (Arduino), SVG шаблоны, BOM, схема
+  micropython/             — альтернативная прошивка MicroPython
+  tools/                   — генераторы сеток, рендеры, GIF-демо, тесты
+  concepts/                — концепт-рендеры
+  pitch/                   — презентация проекта
+
+clock_ru.py                — e-paper часы (тестовый стенд)
+renderer_ru.py             — рендерер для e-paper дисплея
+epd_driver.py              — драйвер Waveshare 2.13" e-Paper V4
+time_source.py             — источник времени (RTC / system fallback)
+deploy/                    — скрипты развёртывания на Raspberry Pi
 ```
 
-## Deploy
+## LED-часы (основной)
 
-1. Flash Raspberry Pi OS Lite via Raspberry Pi Imager (set WiFi, SSH, hostname, user)
-2. Mount SD card on desktop
-3. Run `sudo ./deploy/prepare-sd.sh /media/$USER`
-4. Insert SD into Pi, power on
-5. First boot auto-installs dependencies and starts the clock
+Подробности: [led-clock/](led-clock/)
 
-Alternatively, SSH into the Pi and run `./install.sh`.
+- **MCU**: ESP32-S3 DevKitC (WiFi, NTP)
+- **LED**: 260× WS2812B (сетка 16×16 + 4 точки)
+- **Шрифт**: USSR Stencil (трафаретный, с перемычками)
+- **Питание**: 5V 5A
+- **Бюджет**: ~3 300₽ за макет
+
+## E-paper тестовый стенд
+
+Raspberry Pi Zero W + Waveshare 2.13" e-Paper HAT V4. Используется для отладки логики отображения времени без LED-железа.
+
+```bash
+# Деплой на Pi
+./deploy/prepare-sd.sh /media/$USER
+# Или через SSH
+./install.sh
+```

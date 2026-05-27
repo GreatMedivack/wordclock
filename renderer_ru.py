@@ -78,12 +78,24 @@ def _add_word(active, word):
 
 def active_positions(hour12, minute):
     active = set()
-    m5 = (minute // 5) * 5
-    dots = minute % 5
-    nh = _next_hour(hour12)
+    remainder = minute % 5
+    if remainder <= 2:
+        m5 = (minute // 5) * 5
+        plus_dots = remainder
+        minus_dots = 0
+    else:
+        m5 = (minute // 5) * 5 + 5
+        minus_dots = 5 - remainder
+        plus_dots = 0
+
+    h = hour12
+    if m5 == 60:
+        m5 = 0
+        h = _next_hour(h)
+    nh = _next_hour(h)
 
     if m5 == 0:
-        _add_word(active, HOURS_NOM[hour12])
+        _add_word(active, HOURS_NOM[h])
     elif m5 == 5:
         _add_word(active, W_PYAT_M)
         _add_word(active, W_MINUT)
@@ -129,13 +141,13 @@ def active_positions(hour12, minute):
         _add_word(active, W_PYATI)
         _add_word(active, HOURS_NOM[nh])
 
-    return active, dots
+    return active, plus_dots, minus_dots
 
 
 def render(hour12, minute):
     font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
 
-    active, dots = active_positions(hour12, minute)
+    active, plus_dots, minus_dots = active_positions(hour12, minute)
 
     img = Image.new("1", (EPD_WIDTH, EPD_HEIGHT), 255)
     draw = ImageDraw.Draw(img)
@@ -157,11 +169,20 @@ def render(hour12, minute):
             else:
                 draw.text((tx, ty), char, font=font, fill=0)
 
-    total_dots_w = 3 * DOT_SPACING
-    start_x = EPD_WIDTH // 2 - total_dots_w // 2
-    for i in range(4):
-        dx = start_x + i * DOT_SPACING
-        if i < dots:
+    cx = EPD_WIDTH // 2
+    gap = 5
+    dot_positions = [
+        cx - gap - DOT_SPACING - DOT_R,
+        cx - gap - DOT_R,
+        cx + gap + DOT_R,
+        cx + gap + DOT_SPACING + DOT_R,
+    ]
+    for i, dx in enumerate(dot_positions):
+        if i < 2:
+            filled = (2 - i) <= minus_dots
+        else:
+            filled = (i - 1) <= plus_dots
+        if filled:
             draw.ellipse([dx - DOT_R, DOT_Y - DOT_R, dx + DOT_R, DOT_Y + DOT_R], fill=0)
         else:
             draw.ellipse([dx - DOT_R, DOT_Y - DOT_R, dx + DOT_R, DOT_Y + DOT_R], outline=0)

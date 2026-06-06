@@ -8,14 +8,14 @@ FONT_PATH = os.path.join(os.path.dirname(__file__), "fonts", "LiberationMono-Bol
 FONT_SIZE = 6
 
 GRID = [
-    "РДВАДЦАТЬЗПЯТЬЧЖ",
-    "ФЭДЕСЯТЬЫМИНУТКЩ",
+    "ЪДВАДЦАТЬНПЯТЬИЧ",
+    "РЦДЕСЯТЬГМИНУТЛЗ",
     "ЧЕТВЕРТЬПОЛОВИНА",
-    "ЮБЕЗЛДВАДЦАТИМУП",
-    "ПЯТИХЧЕТВЕРТИШЦЪ",
+    "ЭБЕЗХДВАДЦАТИПСК",
+    "ПЯТИУЧЕТВЕРТИАЯБ",
     "ДЕСЯТИПЕРВОГОТРИ",
     "ВТОРОГОПЯТОГОЧАС",
-    "ТРЕТЬЕГОШЕСТОГОБ",
+    "ТРЕТЬЕГОШЕСТОГОВ",
     "ЧЕТВЁРТОГОЧЕТЫРЕ",
     "СЕДЬМОГОВОСЬМОГО",
     "ДЕВЯТОГОДЕСЯТОГО",
@@ -138,6 +138,11 @@ def render(hour12, minute):
 
     active, plus_dots, minus_dots = _active_positions(hour12, minute)
 
+    # Common vertical alignment from a reference cap glyph so all letters
+    # share the same top edge (descenders of Д/Ц/Щ hang below)
+    ref = font.getbbox("Н")
+    ty_off = (cell_h - (ref[3] - ref[1])) // 2 - ref[1]
+
     for row_idx, row_text in enumerate(GRID):
         for col_idx, char in enumerate(row_text):
             cx = margin_x + col_idx * cell_w
@@ -145,9 +150,8 @@ def render(hour12, minute):
 
             bbox = font.getbbox(char)
             glyph_w = bbox[2] - bbox[0]
-            glyph_h = bbox[3] - bbox[1]
-            tx = cx + (cell_w - glyph_w) // 2
-            ty = cy + (cell_h - glyph_h) // 2 - bbox[1]
+            tx = cx + (cell_w - glyph_w) // 2 - bbox[0]
+            ty = cy + ty_off
 
             if (row_idx, col_idx) in active:
                 draw.rectangle([cx, cy, cx + cell_w - 1, cy + cell_h - 1], fill=0)

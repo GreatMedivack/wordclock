@@ -15,14 +15,14 @@ _FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 ctypes.CDLL("libfontconfig.so.1").FcConfigAppFontAddFile(None, _FONT_FILE.encode())
 
 GRID = [
-    "РДВАДЦАТЬЗПЯТЬЧЖ",
-    "ФЭДЕСЯТЬЫМИНУТКЩ",
+    "ЪДВАДЦАТЬНПЯТЬИЧ",
+    "РЦДЕСЯТЬГМИНУТЛЗ",
     "ЧЕТВЕРТЬПОЛОВИНА",
-    "ЮБЕЗЛДВАДЦАТИМУП",
-    "ПЯТИХЧЕТВЕРТИШЦЪ",
+    "ЭБЕЗХДВАДЦАТИПСК",
+    "ПЯТИУЧЕТВЕРТИАЯБ",
     "ДЕСЯТИПЕРВОГОТРИ",
     "ВТОРОГОПЯТОГОЧАС",
-    "ТРЕТЬЕГОШЕСТОГОБ",
+    "ТРЕТЬЕГОШЕСТОГОВ",
     "ЧЕТВЁРТОГОЧЕТЫРЕ",
     "СЕДЬМОГОВОСЬМОГО",
     "ДЕВЯТОГОДЕСЯТОГО",
@@ -110,10 +110,13 @@ def _draw_grid_lines(ctx, ox=0):
         ctx.stroke()
 
 
-def _draw_text_centered(ctx, cx, cy, ch):
+def _draw_text_centered(ctx, cx, cy, ch, ref=None):
+    """Center ch horizontally; vertically align by ref glyph's box so all
+    letters share a common baseline/top edge (ref=None: self-centered)."""
     ext = ctx.text_extents(ch)
+    vext = ctx.text_extents(ref) if ref else ext
     x = cx - ext.width / 2 - ext.x_bearing
-    y = cy - ext.height / 2 - ext.y_bearing
+    y = cy - vext.height / 2 - vext.y_bearing
     ctx.move_to(x, y)
     ctx.text_path(ch)
 
@@ -140,7 +143,7 @@ def generate_panel_front(path):
     for r in range(ROWS):
         for c in range(COLS):
             cx, cy = cell_center(r, c)
-            _draw_text_centered(ctx, cx, cy, GRID[r][c])
+            _draw_text_centered(ctx, cx, cy, GRID[r][c], ref="Н")
             if (r, c) in ACTIVE:
                 ctx.set_source_rgb(1, 1, 1)
             else:
@@ -239,7 +242,7 @@ def generate_cutting_template(path):
     for r in range(ROWS):
         for c in range(COLS):
             cx, cy = cell_center(r, c)
-            _draw_text_centered(ctx, ox + cx, cy, GRID[r][c])
+            _draw_text_centered(ctx, ox + cx, cy, GRID[r][c], ref="Н")
             if (r, c) in ACTIVE:
                 ctx.set_source_rgb(1, 1, 1)
             else:

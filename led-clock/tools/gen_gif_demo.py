@@ -6,14 +6,14 @@ import sys
 from PIL import Image, ImageDraw, ImageFont
 
 GRID = [
-    "РДВАДЦАТЬЗПЯТЬЧЖ",
-    "ФЭДЕСЯТЬЫМИНУТКЩ",
+    "ЪДВАДЦАТЬНПЯТЬИЧ",
+    "РЦДЕСЯТЬГМИНУТЛЗ",
     "ЧЕТВЕРТЬПОЛОВИНА",
-    "ЮБЕЗЛДВАДЦАТИМУП",
-    "ПЯТИХЧЕТВЕРТИШЦЪ",
+    "ЭБЕЗХДВАДЦАТИПСК",
+    "ПЯТИУЧЕТВЕРТИАЯБ",
     "ДЕСЯТИПЕРВОГОТРИ",
     "ВТОРОГОПЯТОГОЧАС",
-    "ТРЕТЬЕГОШЕСТОГОБ",
+    "ТРЕТЬЕГОШЕСТОГОВ",
     "ЧЕТВЁРТОГОЧЕТЫРЕ",
     "СЕДЬМОГОВОСЬМОГО",
     "ДЕВЯТОГОДЕСЯТОГО",
@@ -206,6 +206,11 @@ def render_frame(hour12, minute):
     tx = max(PAD, (IMG_W - lw) // 2)
     draw.text((tx, 10), label, font=label_font, fill=LABEL_CLR)
 
+    # Common vertical alignment from a reference cap glyph so all letters
+    # share the same top edge (descenders of Д/Ц/Щ hang below)
+    ref = font.getbbox("Н")
+    fty_off = (CELL - (ref[3] - ref[1])) // 2 - ref[1]
+
     oy = LABEL_H
     for ri, row_text in enumerate(GRID):
         for ci, ch in enumerate(row_text):
@@ -214,10 +219,8 @@ def render_frame(hour12, minute):
             color = ON if (ri, ci) in active else DIM
             bbox = font.getbbox(ch)
             gw = bbox[2] - bbox[0]
-            gh = bbox[3] - bbox[1]
-            ftx = cx + (CELL - gw) // 2
-            fty = cy + (CELL - gh) // 2 - bbox[1]
-            draw.text((ftx, fty), ch, font=font, fill=color)
+            ftx = cx + (CELL - gw) // 2 - bbox[0]
+            draw.text((ftx, cy + fty_off), ch, font=font, fill=color)
 
     dot_y = oy + CLOCK_H + DOT_ROW_H // 2
 

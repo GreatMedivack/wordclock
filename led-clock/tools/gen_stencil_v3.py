@@ -16,14 +16,14 @@ _FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 ctypes.CDLL("libfontconfig.so.1").FcConfigAppFontAddFile(None, _FONT_FILE.encode())
 
 GRID = [
-    "РДВАДЦАТЬЗПЯТЬЧЖ",
-    "ФЭДЕСЯТЬЫМИНУТКЩ",
+    "ЪДВАДЦАТЬНПЯТЬИЧ",
+    "РЦДЕСЯТЬГМИНУТЛЗ",
     "ЧЕТВЕРТЬПОЛОВИНА",
-    "ЮБЕЗЛДВАДЦАТИМУП",
-    "ПЯТИХЧЕТВЕРТИШЦЪ",
+    "ЭБЕЗХДВАДЦАТИПСК",
+    "ПЯТИУЧЕТВЕРТИАЯБ",
     "ДЕСЯТИПЕРВОГОТРИ",
     "ВТОРОГОПЯТОГОЧАС",
-    "ТРЕТЬЕГОШЕСТОГОБ",
+    "ТРЕТЬЕГОШЕСТОГОВ",
     "ЧЕТВЁРТОГОЧЕТЫРЕ",
     "СЕДЬМОГОВОСЬМОГО",
     "ДЕВЯТОГОДЕСЯТОГО",
@@ -109,6 +109,10 @@ def generate_svg():
     ctx.select_font_face(FONT_FACE, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
     ctx.set_font_size(FONT_SIZE)
 
+    # Common baseline from a reference cap glyph so all letters share the
+    # same top edge (descenders of Д/Ц/Щ hang below, as in normal text)
+    ref = ctx.text_extents("Н")
+
     for row in range(ROWS):
         for col in range(COLS):
             ch = GRID[row][col]
@@ -117,7 +121,7 @@ def generate_svg():
 
             ext = ctx.text_extents(ch)
             x = cx - ext.width / 2 - ext.x_bearing
-            y = cy - ext.height / 2 - ext.y_bearing
+            y = cy - ref.height / 2 - ref.y_bearing
 
             ctx.new_path()
             ctx.move_to(x, y)

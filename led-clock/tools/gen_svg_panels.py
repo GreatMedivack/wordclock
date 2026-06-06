@@ -1,21 +1,28 @@
 #!/usr/bin/env python3
 """Regenerate panel_front.svg, baffle_grid.svg, cutting_template.svg with dot row.
 
-Uses Cairo to convert text to paths so USSR STENCIL font is embedded.
+Uses Cairo to convert text to paths so Black Ops One font is embedded.
 """
 
 import cairo
+import ctypes
 import math
+import os
+
+# Register the project font with fontconfig so cairo finds it by family name
+_FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          os.pardir, "arduino", "wordclock_ru", "BlackOpsOne.ttf")
+ctypes.CDLL("libfontconfig.so.1").FcConfigAppFontAddFile(None, _FONT_FILE.encode())
 
 GRID = [
-    "ГДВАДЦАТЬГПЯТЬГЖ",
-    "ЖГДЕСЯТЬГМИНУТГЖ",
+    "РДВАДЦАТЬЗПЯТЬЧЖ",
+    "ФЭДЕСЯТЬЫМИНУТКЩ",
     "ЧЕТВЕРТЬПОЛОВИНА",
-    "ГБЕЗГДВАДЦАТИГЖГ",
-    "ПЯТИГЧЕТВЕРТИГГГ",
+    "ЮБЕЗЛДВАДЦАТИМУП",
+    "ПЯТИХЧЕТВЕРТИШЦЪ",
     "ДЕСЯТИПЕРВОГОТРИ",
     "ВТОРОГОПЯТОГОЧАС",
-    "ТРЕТЬЕГОШЕСТОГОГ",
+    "ТРЕТЬЕГОШЕСТОГОБ",
     "ЧЕТВЁРТОГОЧЕТЫРЕ",
     "СЕДЬМОГОВОСЬМОГО",
     "ДЕВЯТОГОДЕСЯТОГО",
@@ -32,13 +39,13 @@ PITCH = 16.67
 MARGIN = 5.0
 PANEL_W = MARGIN * 2 + PITCH * COLS
 GRID_BOTTOM = MARGIN + PITCH * ROWS
-DOT_ROW_Y = GRID_BOTTOM + 20.0
+DOT_ROW_Y = GRID_BOTTOM + 18.0
 DOT_RADIUS = 5.0
 NUM_DOTS = 4
 PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN
 
-FONT_FACE = "USSR STENCIL"
-FONT_SIZE = 17.6
+FONT_FACE = "Black Ops One"
+FONT_SIZE = 15.0  # widest glyph Ж ≈ 15.8mm at this size, fits 16.67mm pitch
 MONO_FACE = "monospace"
 MONO_SIZE = 3.5
 

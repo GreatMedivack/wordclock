@@ -1,22 +1,29 @@
 #!/usr/bin/env python3
 """Generate stencil panel SVG for Russian word clock v2.
 
-Uses USSR STENCIL font which has built-in stencil bridges for all
+Uses Black Ops One font which has built-in stencil bridges for all
 enclosed Cyrillic letters (О, В, А, Д, Б, Р, Ь, Я etc).
 """
 
 import cairo
+import ctypes
 import math
+import os
+
+# Register the project font with fontconfig so cairo finds it by family name
+_FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          os.pardir, "arduino", "wordclock_ru", "BlackOpsOne.ttf")
+ctypes.CDLL("libfontconfig.so.1").FcConfigAppFontAddFile(None, _FONT_FILE.encode())
 
 GRID = [
-    "ГДВАДЦАТЬГПЯТЬГЖ",
-    "ЖГДЕСЯТЬГМИНУТГЖ",
+    "РДВАДЦАТЬЗПЯТЬЧЖ",
+    "ФЭДЕСЯТЬЫМИНУТКЩ",
     "ЧЕТВЕРТЬПОЛОВИНА",
-    "ГБЕЗГДВАДЦАТИГЖГ",
-    "ПЯТИГЧЕТВЕРТИГГГ",
+    "ЮБЕЗЛДВАДЦАТИМУП",
+    "ПЯТИХЧЕТВЕРТИШЦЪ",
     "ДЕСЯТИПЕРВОГОТРИ",
     "ВТОРОГОПЯТОГОЧАС",
-    "ТРЕТЬЕГОШЕСТОГОГ",
+    "ТРЕТЬЕГОШЕСТОГОБ",
     "ЧЕТВЁРТОГОЧЕТЫРЕ",
     "СЕДЬМОГОВОСЬМОГО",
     "ДЕВЯТОГОДЕСЯТОГО",
@@ -32,13 +39,13 @@ ROWS = 16
 PITCH = 16.67  # mm between LED centers
 MARGIN = 5.0   # mm border
 PANEL_W = MARGIN * 2 + PITCH * COLS         # 276.72mm
-DOT_ROW_Y = MARGIN + PITCH * ROWS + 20.0   # 20mm below grid
+DOT_ROW_Y = MARGIN + PITCH * ROWS + 18.0   # 18mm below grid
 DOT_RADIUS = 5.0                            # mm
 NUM_DOTS = 4
 PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN  # ~304mm
 
-FONT_FACE = "USSR STENCIL"
-FONT_SIZE = 17.6  # mm — max inscribed in PITCH
+FONT_FACE = "Black Ops One"
+FONT_SIZE = 15.0  # mm — max inscribed in PITCH (widest glyph Ж ≈ 15.8mm)
 
 BG_COLOR = (0.08, 0.08, 0.08)
 LETTER_COLOR = (1.0, 1.0, 1.0)

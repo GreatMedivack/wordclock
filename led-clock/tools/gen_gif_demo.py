@@ -2,17 +2,18 @@
 """Generate animated GIF: full 12-hour word clock demo, 2s per frame."""
 
 import os
+import sys
 from PIL import Image, ImageDraw, ImageFont
 
 GRID = [
-    "ГДВАДЦАТЬГПЯТЬГЖ",
-    "ЖГДЕСЯТЬГМИНУТГЖ",
+    "РДВАДЦАТЬЗПЯТЬЧЖ",
+    "ФЭДЕСЯТЬЫМИНУТКЩ",
     "ЧЕТВЕРТЬПОЛОВИНА",
-    "ГБЕЗГДВАДЦАТИГЖГ",
-    "ПЯТИГЧЕТВЕРТИГГГ",
+    "ЮБЕЗЛДВАДЦАТИМУП",
+    "ПЯТИХЧЕТВЕРТИШЦЪ",
     "ДЕСЯТИПЕРВОГОТРИ",
     "ВТОРОГОПЯТОГОЧАС",
-    "ТРЕТЬЕГОШЕСТОГОГ",
+    "ТРЕТЬЕГОШЕСТОГОБ",
     "ЧЕТВЁРТОГОЧЕТЫРЕ",
     "СЕДЬМОГОВОСЬМОГО",
     "ДЕВЯТОГОДЕСЯТОГО",
@@ -187,7 +188,9 @@ IMG_H = LABEL_H + CLOCK_H + DOT_ROW_H
 script_dir = os.path.dirname(os.path.abspath(__file__))
 repo_root = os.path.dirname(os.path.dirname(script_dir))
 
-FONT_PATH = os.path.join(script_dir, os.pardir, "arduino", "wordclock_ru", "USSRStencil.ttf")
+FONT_PATH = os.path.join(script_dir, os.pardir, "arduino", "wordclock_ru", "BlackOpsOne.ttf")
+if len(sys.argv) > 1:
+    FONT_PATH = sys.argv[1]
 font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
 label_font = ImageFont.truetype(FONT_PATH, LABEL_SIZE)
 
@@ -239,7 +242,8 @@ def render_frame(hour12, minute):
 
 if __name__ == "__main__":
     out_dir = os.path.join(script_dir, os.pardir)
-    out_path = os.path.normpath(os.path.join(out_dir, "wordclock_12h_demo.gif"))
+    out_name = sys.argv[2] if len(sys.argv) > 2 else "wordclock_12h_demo.gif"
+    out_path = os.path.normpath(os.path.join(out_dir, out_name))
 
     frames = []
     for h12 in range(1, 13):

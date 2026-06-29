@@ -224,20 +224,21 @@ def render_frame(hour12, minute):
 
     dot_y = oy + CLOCK_H + DOT_ROW_H // 2
 
-    dot_positions = [
-        PAD + 5 * CELL + CELL // 2,
-        PAD + 6 * CELL + CELL // 2,
-        PAD + 9 * CELL + CELL // 2,
-        PAD + 10 * CELL + CELL // 2,
-    ]
-
-    for i, dx in enumerate(dot_positions):
-        if i < 2:
-            filled = (2 - i) <= minus_dots
-            color = MINUS_CLR if filled else DIM
-        else:
-            filled = (i - 1) <= plus_dots
-            color = ON if filled else DIM
+    # 6-LED dot strip under cols 5..10: minus pair (5,6), dark separator (7,8),
+    # plus pair (9,10). Inner dots (6 / 9) light first, then the outer (5 / 10).
+    dot_cols = [5, 6, 7, 8, 9, 10]
+    for col in dot_cols:
+        dx = PAD + col * CELL + CELL // 2
+        if col == 6:
+            color = MINUS_CLR if minus_dots >= 1 else DIM
+        elif col == 5:
+            color = MINUS_CLR if minus_dots >= 2 else DIM
+        elif col == 9:
+            color = ON if plus_dots >= 1 else DIM
+        elif col == 10:
+            color = ON if plus_dots >= 2 else DIM
+        else:  # cols 7, 8 — no opening (solid separator), not drawn
+            continue
         draw.ellipse([dx - DOT_R, dot_y - DOT_R, dx + DOT_R, dot_y + DOT_R], fill=color)
 
     return img

@@ -2,6 +2,14 @@
 """Regenerate panel_front.svg, baffle_grid.svg, cutting_template.svg with dot row.
 
 Uses Cairo to convert text to paths so Black Ops One font is embedded.
+
+Geometry v3 (30×30cm board):
+  - Panel 300×300 mm.
+  - 16×16 letter grid: 1.8cm top/bottom margins → vertical pitch 16.5mm.
+    Horizontal pitch stays native 16.67mm (60/m strip), grid centered → ~16.6mm side margins.
+  - 6-LED dot strip under grid columns 6-11, 5mm gap below the grid.
+    Lit pairs under cols 6,7 (idx 256,257) and 10,11 (idx 260,261);
+    middle two under cols 8,9 (idx 258,259) stay dark as a visible separator.
 """
 
 import cairo
@@ -35,17 +43,30 @@ GRID = [
 
 COLS = 16
 ROWS = 16
-PITCH = 16.67
-MARGIN = 5.0
-PANEL_W = MARGIN * 2 + PITCH * COLS
-GRID_BOTTOM = MARGIN + PITCH * ROWS
-DOT_ROW_Y = GRID_BOTTOM + 18.0
+
+# Panel is the physical 30×30cm board
+PANEL_W = 300.0
+PANEL_H = 300.0
+
+# Horizontal: native strip pitch (60 LED/m), grid centered on the panel
+PITCH_X = 16.67
+MARGIN_X = (PANEL_W - PITCH_X * COLS) / 2.0   # ≈ 16.64mm side margins
+
+# Vertical: 1.8cm top/bottom margins around the 16 rows fix the pitch
+MARGIN_TOP = 18.0
+PITCH_Y = (PANEL_H - 2 * MARGIN_TOP) / ROWS   # = 16.5mm
+GRID_BOTTOM = MARGIN_TOP + PITCH_Y * ROWS     # = 282mm
+
+# 6-LED dot strip below the grid
+DOT_GAP = 5.0                                 # 0.5cm gap grid→dots
 DOT_RADIUS = 5.0
-NUM_DOTS = 4
-PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN
+DOT_ROW_Y = GRID_BOTTOM + DOT_GAP + DOT_RADIUS  # center = 292mm (3mm to bottom edge)
+DOT_COLS = list(range(5, 11))                 # under grid columns 5..10 (centered)
+DOT_LIT_COLS = {5, 6, 9, 10}                  # lit pairs; 7,8 are the dark gap
+NUM_DOTS = len(DOT_COLS)
 
 FONT_FACE = "Black Ops One"
-FONT_SIZE = 15.0  # widest glyph Ж ≈ 15.8mm at this size, fits 16.67mm pitch
+FONT_SIZE = 15.0  # widest glyph Ж ≈ 15.8mm at this size, fits the pitch
 MONO_FACE = "monospace"
 MONO_SIZE = 3.5
 
@@ -76,16 +97,16 @@ for row, cs, ce in _WORD_RANGES:
 
 
 def cell_center(row, col):
-    return MARGIN + (col + 0.5) * PITCH, MARGIN + (row + 0.5) * PITCH
+    return MARGIN_X + (col + 0.5) * PITCH_X, MARGIN_TOP + (row + 0.5) * PITCH_Y
 
 
 def dot_xs():
-    return [
-        cell_center(0, 5)[0],
-        cell_center(0, 6)[0],
-        cell_center(0, 9)[0],
-        cell_center(0, 10)[0],
-    ]
+    """X centers of the 6 dot LEDs, left→right, aligned to grid cols 6..11."""
+    return [MARGIN_X + (c + 0.5) * PITCH_X for c in DOT_COLS]
+
+
+def dot_is_lit(i):
+    return DOT_COLS[i] in DOT_LIT_COLS
 
 
 def led_index(row, col):
@@ -99,13 +120,13 @@ def _draw_grid_lines(ctx, ox=0):
     ctx.set_source_rgb(0.2, 0.2, 0.2)
     ctx.set_line_width(0.1)
     for r in range(ROWS + 1):
-        y = MARGIN + r * PITCH
-        ctx.move_to(ox + MARGIN, y)
-        ctx.line_to(ox + PANEL_W - MARGIN, y)
+        y = MARGIN_TOP + r * PITCH_Y
+        ctx.move_to(ox + MARGIN_X, y)
+        ctx.line_to(ox + PANEL_W - MARGIN_X, y)
         ctx.stroke()
     for c in range(COLS + 1):
-        x = ox + MARGIN + c * PITCH
-        ctx.move_to(x, MARGIN)
+        x = ox + MARGIN_X + c * PITCH_X
+        ctx.move_to(x, MARGIN_TOP)
         ctx.line_to(x, GRID_BOTTOM)
         ctx.stroke()
 
@@ -150,7 +171,9 @@ def generate_panel_front(path):
                 ctx.set_source_rgb(0.33, 0.33, 0.33)
             ctx.fill()
 
-    for dx in dot_xs():
+    for i, dx in enumerate(dot_xs()):
+        if not dot_is_lit(i):
+            continue  # no opening under the dark separator dots (258,259)
         ctx.arc(dx, DOT_ROW_Y, DOT_RADIUS, 0, 2 * math.pi)
         ctx.set_source_rgb(1, 1, 1)
         ctx.fill_preserve()
@@ -178,13 +201,13 @@ def generate_baffle_grid(path):
     ctx.set_source_rgb(0, 0, 1)
     ctx.set_line_width(0.15)
     for r in range(ROWS + 1):
-        y = MARGIN + r * PITCH
-        ctx.move_to(MARGIN, y)
-        ctx.line_to(PANEL_W - MARGIN, y)
+        y = MARGIN_TOP + r * PITCH_Y
+        ctx.move_to(MARGIN_X, y)
+        ctx.line_to(PANEL_W - MARGIN_X, y)
         ctx.stroke()
     for c in range(COLS + 1):
-        x = MARGIN + c * PITCH
-        ctx.move_to(x, MARGIN)
+        x = MARGIN_X + c * PITCH_X
+        ctx.move_to(x, MARGIN_TOP)
         ctx.line_to(x, GRID_BOTTOM)
         ctx.stroke()
 
@@ -249,7 +272,9 @@ def generate_cutting_template(path):
                 ctx.set_source_rgb(0.33, 0.33, 0.33)
             ctx.fill()
 
-    for dx in dot_xs():
+    for i, dx in enumerate(dot_xs()):
+        if not dot_is_lit(i):
+            continue  # no opening under the dark separator dots (258,259)
         ctx.arc(ox + dx, DOT_ROW_Y, DOT_RADIUS, 0, 2 * math.pi)
         ctx.set_source_rgb(1, 1, 1)
         ctx.fill_preserve()
@@ -270,13 +295,13 @@ def generate_cutting_template(path):
     ctx.set_source_rgb(0, 0, 1)
     ctx.set_line_width(0.15)
     for r in range(ROWS + 1):
-        y = MARGIN + r * PITCH
-        ctx.move_to(ox + MARGIN, y)
-        ctx.line_to(ox + PANEL_W - MARGIN, y)
+        y = MARGIN_TOP + r * PITCH_Y
+        ctx.move_to(ox + MARGIN_X, y)
+        ctx.line_to(ox + PANEL_W - MARGIN_X, y)
         ctx.stroke()
     for c in range(COLS + 1):
-        x = ox + MARGIN + c * PITCH
-        ctx.move_to(x, MARGIN)
+        x = ox + MARGIN_X + c * PITCH_X
+        ctx.move_to(x, MARGIN_TOP)
         ctx.line_to(x, GRID_BOTTOM)
         ctx.stroke()
 
@@ -314,4 +339,6 @@ if __name__ == "__main__":
         gen(path)
         print(f"  {name}: {PANEL_W:.2f} x {PANEL_H:.2f} mm")
 
-    print(f"\nAll SVGs updated with {NUM_DOTS} dot indicators below grid.")
+    print(f"\nGeometry: pitch X={PITCH_X} Y={PITCH_Y:.2f}mm, "
+          f"margins side={MARGIN_X:.2f} top/bottom={MARGIN_TOP}mm")
+    print(f"All SVGs updated with {NUM_DOTS} dot indicators (lit cols {sorted(DOT_LIT_COLS)}).")

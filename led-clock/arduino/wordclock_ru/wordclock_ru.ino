@@ -5,9 +5,10 @@
 #include <FastLED.h>
 #include <WiFi.h>
 #include <time.h>
+#include "secrets.h"  // WiFi creds — copy secrets.h.example to secrets.h (gitignored)
 
-const char* WIFI_SSID     = "YOUR_WIFI_SSID";
-const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
+const char* WIFI_SSID     = SECRET_WIFI_SSID;
+const char* WIFI_PASSWORD = SECRET_WIFI_PASSWORD;
 const char* NTP_SERVER    = "pool.ntp.org";
 const long  GMT_OFFSET    = 3 * 3600;  // MSK (UTC+3)
 const int   DST_OFFSET    = 0;
@@ -16,17 +17,19 @@ const int   DST_OFFSET    = 0;
 #define COLS        16
 #define ROWS        16
 #define GRID_LEDS   (ROWS * COLS)  // 256
-#define DOT_LEDS    4
-#define NUM_LEDS    (GRID_LEDS + DOT_LEDS)  // 260
+#define DOT_LEDS    6
+#define NUM_LEDS    (GRID_LEDS + DOT_LEDS)  // 262
 #define BRIGHTNESS  40
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
 // Dot LED indices (4 LEDs after the grid, centered below)
-#define DOT_1  256
-#define DOT_2  257
-#define DOT_3  258
-#define DOT_4  259
+// 6-LED dot strip (indices 256-261). Outer pairs used; middle two (258,259)
+// stay dark for a visible gap between the minus and plus pairs.
+#define DOT_1  256  // left pair, outer
+#define DOT_2  257  // left pair, inner
+#define DOT_3  260  // right pair, inner
+#define DOT_4  261  // right pair, outer
 
 CRGB leds[NUM_LEDS];
 const CRGB COLOR_ON  = CRGB(255, 180, 80);
@@ -49,9 +52,13 @@ const CRGB COLOR_OFF = CRGB(0, 0, 0);
 // 13: ДВЕНАДЦАТЬДЕСЯТЬ   ДВЕНАДЦАТЬ ДЕСЯТЬ
 // 14: ОДИННАДЦАТЬШЕСТЬ   ОДИННАДЦАТЬ ШЕСТЬ
 // 15: СЕМЬВОСЕМЬДЕВЯТЬ   СЕМЬ ВОСЕМЬ ДЕВЯТЬ
-// Dots: LED 256-259 — left pair (minus), right pair (plus), ±2 minutes
+// Dots: LED 256-261 (6-LED strip) — left pair (minus) 256-257, gap 258-259, right pair (plus) 260-261, ±2 minutes
 
 struct WordPos { uint8_t row; uint8_t col_start; uint8_t col_end; };
+struct ClockState { uint8_t hour12; uint8_t minute; };
+bool operator!=(const ClockState& a, const ClockState& b) {
+    return a.hour12 != b.hour12 || a.minute != b.minute;
+}
 
 // ── Minute/modifier words (rows 0-5) ──
 const WordPos W_DVADTSAT  = {0,  1,  9};  // ДВАДЦАТЬ
@@ -113,11 +120,6 @@ void lightWord(const WordPos& w, CRGB color) {
 
 uint8_t nextHour(uint8_t h) {
     return h % 12 + 1;
-}
-
-struct ClockState { uint8_t hour12; uint8_t minute; };
-bool operator!=(const ClockState& a, const ClockState& b) {
-    return a.hour12 != b.hour12 || a.minute != b.minute;
 }
 
 void showDots(uint8_t minus_dots, uint8_t plus_dots) {

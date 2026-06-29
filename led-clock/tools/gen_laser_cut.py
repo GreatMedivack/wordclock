@@ -37,32 +37,41 @@ GRID = [
 
 COLS = 16
 ROWS = 16
-PITCH = 16.67       # mm between LED centers
-MARGIN = 5.0        # mm border
-PANEL_W = MARGIN * 2 + PITCH * COLS
-GRID_BOTTOM = MARGIN + PITCH * ROWS
-DOT_ROW_Y = GRID_BOTTOM + 18.0
+
+# Panel is the physical 30×30cm board
+PANEL_W = 300.0
+PANEL_H = 300.0
+
+# Horizontal: native strip pitch (60 LED/m), grid centered on the panel
+PITCH_X = 16.67
+MARGIN_X = (PANEL_W - PITCH_X * COLS) / 2.0   # ≈ 16.64mm side margins
+
+# Vertical: 1.8cm top/bottom margins around the 16 rows fix the pitch
+MARGIN_TOP = 18.0
+PITCH_Y = (PANEL_H - 2 * MARGIN_TOP) / ROWS   # = 16.5mm
+GRID_BOTTOM = MARGIN_TOP + PITCH_Y * ROWS     # = 282mm
+
+# 6-LED dot strip below the grid, under grid columns 5..10 (centered).
+# Only the lit pairs (5,6 and 9,10) get cut openings; the middle two (7,8)
+# stay solid so the dark separator reads as a gap.
+DOT_GAP = 5.0
 DOT_RADIUS = 5.0
-PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN
+DOT_ROW_Y = GRID_BOTTOM + DOT_GAP + DOT_RADIUS  # center = 292mm
+DOT_LIT_COLS = [5, 6, 9, 10]
 
 FONT_FACE = "Black Ops One"
-FONT_SIZE = 15.0  # widest glyph Ж ≈ 15.8mm at this size, fits 16.67mm pitch
+FONT_SIZE = 15.0  # widest glyph Ж ≈ 15.8mm at this size, fits the pitch
 
 CUT_COLOR = (1.0, 0.0, 0.0)
 CUT_WIDTH = 0.3      # mm — visible in preview; laser software uses color, not width
 
 
 def cell_center(row, col):
-    return MARGIN + (col + 0.5) * PITCH, MARGIN + (row + 0.5) * PITCH
+    return MARGIN_X + (col + 0.5) * PITCH_X, MARGIN_TOP + (row + 0.5) * PITCH_Y
 
 
 def dot_xs():
-    return [
-        cell_center(0, 5)[0],
-        cell_center(0, 6)[0],
-        cell_center(0, 9)[0],
-        cell_center(0, 10)[0],
-    ]
+    return [cell_center(0, c)[0] for c in DOT_LIT_COLS]
 
 
 def generate(svg_path):

@@ -1,0 +1,21 @@
+wire_color_5V = красный
+wire_color_GND = черный
+wire_color_DATA = желтый/зеленый
+
+Row connections:
+Row 0: DOUT → Row 1 DOUT
+Row 1: DIN → Row 2 DIN
+Row 2: DOUT → Row 3 DOUT
+Row 3: DIN → Row 4 DIN
+Row 4: DOUT → Row 5 DOUT
+Row 5: DIN → Row 6 DIN
+Row 6: DOUT → Row 7 DOUT
+Row 7: DIN → Row 8 DIN
+Row 8: DOUT → Row 9 DOUT
+Row 9: DIN → Row 10 DIN
+Row 10: DOUT → Row 11 DOUT
+Row 11: DIN → Row 12 DIN
+Row 12: DOUT → Row 13 DOUT
+Row 13: DIN → Row 14 DIN
+Row 14: DOUT → Row 15 DOUT
+Row 15: DOUT → 4-dot strip DIN

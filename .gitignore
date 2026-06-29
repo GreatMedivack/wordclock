@@ -5,3 +5,9 @@ __pycache__/
 venv/
 preview.png
 *.egg-info/
+
+# Secrets — real WiFi credentials, never commit
+secrets.h
+
+# aider tool artifacts
+.aider*

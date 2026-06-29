@@ -21,7 +21,7 @@ GRID = [
     "ОДИННАДЦАТЬШЕСТЬ",  # 14: ОДИННАДЦАТЬ ШЕСТЬ
     "СЕМЬВОСЕМЬДЕВЯТЬ",  # 15: СЕМЬ ВОСЕМЬ ДЕВЯТЬ
 ]
-# + 4 dot LEDs (256-259) below grid
+# + 6 dot LEDs (256-261) below grid: lit pairs 256,257 / 260,261; 258,259 dark
 
 COLS = 16
 ROWS = 16
@@ -228,23 +228,22 @@ def render_one(h, m):
             fty = cy + (CELL - gh) // 2 - bbox[1]
             draw.text((ftx, fty), ch, font=font, fill=color)
 
-    # Dot row: ●● [gap] ●● — left pair = minus, right pair = plus
+    # 6-LED dot row under cols 5..10: ●● [○○] ●● — minus pair (5,6),
+    # dark separator (7,8), plus pair (9,10). Inner dots light first.
     dot_y = oy + CLOCK_H + DOT_ROW_H // 2
 
-    dot_positions = [
-        PAD + 5 * CELL + CELL // 2,
-        PAD + 6 * CELL + CELL // 2,
-        PAD + 9 * CELL + CELL // 2,
-        PAD + 10 * CELL + CELL // 2,
-    ]
-
-    for i, dx in enumerate(dot_positions):
-        if i < 2:
-            filled = (2 - i) <= minus_dots
-            color = MINUS_COLOR if filled else DIM_COLOR
-        else:
-            filled = (i - 1) <= plus_dots
-            color = DOT_COLOR if filled else DIM_COLOR
+    for col in (5, 6, 7, 8, 9, 10):
+        dx = PAD + col * CELL + CELL // 2
+        if col == 6:
+            color = MINUS_COLOR if minus_dots >= 1 else DIM_COLOR
+        elif col == 5:
+            color = MINUS_COLOR if minus_dots >= 2 else DIM_COLOR
+        elif col == 9:
+            color = DOT_COLOR if plus_dots >= 1 else DIM_COLOR
+        elif col == 10:
+            color = DOT_COLOR if plus_dots >= 2 else DIM_COLOR
+        else:  # cols 7, 8 — no opening (solid separator), not drawn
+            continue
         draw.ellipse([dx - DOT_R, dot_y - DOT_R, dx + DOT_R, dot_y + DOT_R], fill=color)
 
     return img

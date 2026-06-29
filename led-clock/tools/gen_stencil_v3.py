@@ -36,13 +36,26 @@ GRID = [
 
 COLS = 16
 ROWS = 16
-PITCH = 16.67  # mm between LED centers
-MARGIN = 5.0   # mm border
-PANEL_W = MARGIN * 2 + PITCH * COLS         # 276.72mm
-DOT_ROW_Y = MARGIN + PITCH * ROWS + 18.0   # 18mm below grid
-DOT_RADIUS = 5.0                            # mm
+
+# Panel is the physical 30×30cm board
+PANEL_W = 300.0
+PANEL_H = 300.0
+
+# Horizontal: native strip pitch (60 LED/m), grid centered on the panel
+PITCH_X = 16.67
+MARGIN_X = (PANEL_W - PITCH_X * COLS) / 2.0   # ≈ 16.64mm side margins
+
+# Vertical: 1.8cm top/bottom margins around the 16 rows fix the pitch
+MARGIN_TOP = 18.0
+PITCH_Y = (PANEL_H - 2 * MARGIN_TOP) / ROWS   # = 16.5mm
+GRID_BOTTOM = MARGIN_TOP + PITCH_Y * ROWS     # = 282mm
+
+# 6-LED dot strip under grid columns 5..10 (centered); only the lit pairs
+# (5,6 and 9,10) are cut as openings, middle two (7,8) stay solid.
+DOT_GAP = 5.0
+DOT_RADIUS = 5.0
+DOT_ROW_Y = GRID_BOTTOM + DOT_GAP + DOT_RADIUS  # center = 292mm
 NUM_DOTS = 4
-PANEL_H = DOT_ROW_Y + DOT_RADIUS + MARGIN  # ~304mm
 
 FONT_FACE = "Black Ops One"
 FONT_SIZE = 15.0  # mm — max inscribed in PITCH (widest glyph Ж ≈ 15.8mm)
@@ -79,8 +92,8 @@ for row, cs, ce in _WORD_RANGES:
 
 
 def cell_center(row, col):
-    x = MARGIN + (col + 0.5) * PITCH
-    y = MARGIN + (row + 0.5) * PITCH
+    x = MARGIN_X + (col + 0.5) * PITCH_X
+    y = MARGIN_TOP + (row + 0.5) * PITCH_Y
     return x, y
 
 
@@ -136,12 +149,7 @@ def generate_svg():
             ctx.stroke()
 
     # Dot indicators below grid: ●● [gap] ●●
-    dot_xs = [
-        MARGIN + (5 + 0.5) * PITCH,
-        MARGIN + (6 + 0.5) * PITCH,
-        MARGIN + (9 + 0.5) * PITCH,
-        MARGIN + (10 + 0.5) * PITCH,
-    ]
+    dot_xs = [cell_center(0, c)[0] for c in (5, 6, 9, 10)]
 
     for dx in dot_xs:
         dy = DOT_ROW_Y

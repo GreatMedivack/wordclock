@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Generate laser-cutting SVG for the clock front mask.
+"""Generate laser-cutting layout for the clock front mask.
 
-Output: red hairline strokes only (no fills, no background).
-Convention: red (255,0,0) = cut, blue = engrave. Most laser shops accept this.
+Outputs a PDF (deliverable — the shop accepts .PDF, not .SVG) at true 1:1 in
+millimetres, plus an SVG for on-screen preview. Red hairline strokes only, no
+fills, no background. All glyphs are emitted as closed vector outlines (curves),
+never as text. Convention: red (255,0,0) = cut. Most laser shops accept this.
 """
 
 import cairo
@@ -25,7 +27,7 @@ GRID = [
     "ДЕСЯТИПЕРВОГОТРИ",
     "ВТОРОГОПЯТОГОЧАС",
     "ТРЕТЬЕГОШЕСТОГОВ",
-    "ЧЕТВЁРТОГОЧЕТЫРЕ",
+    "ЧЕТВЕРТОГОЧЕТЫРЕ",
     "СЕДЬМОГОВОСЬМОГО",
     "ДЕВЯТОГОДЕСЯТОГО",
     "ОДИННАДЦАТОГОДВА",
@@ -63,7 +65,12 @@ FONT_FACE = "Black Ops One"
 FONT_SIZE = 15.0  # widest glyph Ж ≈ 15.8mm at this size, fits the pitch
 
 CUT_COLOR = (1.0, 0.0, 0.0)
-CUT_WIDTH = 0.3      # mm — visible in preview; laser software uses color, not width
+CUT_WIDTH = 0.1      # mm — hairline; laser software cuts by color, not width
+
+# Blank margin around the panel so the 300x300 border isn't clipped at the page
+# edge (a stroke sitting exactly on the boundary loses its outer half).
+PAGE_MARGIN = 10.0   # mm
+MM_TO_PT = 72.0 / 25.4
 
 
 def cell_center(row, col):
@@ -74,20 +81,16 @@ def dot_xs():
     return [cell_center(0, c)[0] for c in DOT_LIT_COLS]
 
 
-def generate(svg_path):
-    mm_to_pt = 72.0 / 25.4
-    surface = cairo.SVGSurface(svg_path, PANEL_W * mm_to_pt, PANEL_H * mm_to_pt)
-    ctx = cairo.Context(surface)
-    ctx.scale(mm_to_pt, mm_to_pt)
-
+def draw(ctx):
+    """Draw the full cut layout in millimetres onto an mm-scaled context."""
     ctx.set_source_rgb(*CUT_COLOR)
     ctx.set_line_width(CUT_WIDTH)
 
-    # Outer border — cut rectangle
+    # Outer border — closed cut rectangle
     ctx.rectangle(0, 0, PANEL_W, PANEL_H)
     ctx.stroke()
 
-    # Letter outlines — cut paths
+    # Letter outlines — closed cut paths (glyphs converted to curves, not text)
     ctx.select_font_face(FONT_FACE, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
     ctx.set_font_size(FONT_SIZE)
 
@@ -106,26 +109,55 @@ def generate(svg_path):
 
             ctx.new_path()
             ctx.move_to(x, y)
-            ctx.text_path(ch)
+            ctx.text_path(ch)   # each glyph contour is already a closed TrueType outline
             ctx.stroke()
 
-    # Dot circles — cut
+    # Dot circles — explicitly closed cut paths
     for dx in dot_xs():
         ctx.new_path()
         ctx.arc(dx, DOT_ROW_Y, DOT_RADIUS, 0, 2 * math.pi)
+        ctx.close_path()
         ctx.stroke()
 
+
+def _page_pt():
+    # Page = panel + margin on every side (still 1:1; only the sheet is bigger)
+    return (PANEL_W + 2 * PAGE_MARGIN) * MM_TO_PT, (PANEL_H + 2 * PAGE_MARGIN) * MM_TO_PT
+
+
+def generate_pdf(pdf_path):
+    w_pt, h_pt = _page_pt()
+    surface = cairo.PDFSurface(pdf_path, w_pt, h_pt)
+    ctx = cairo.Context(surface)
+    ctx.scale(MM_TO_PT, MM_TO_PT)      # 1 user unit = 1 mm (vector, DPI-independent)
+    ctx.translate(PAGE_MARGIN, PAGE_MARGIN)
+    draw(ctx)
     surface.finish()
-    print(f"Laser cut SVG: {svg_path}")
-    print(f"  Panel: {PANEL_W:.1f} x {PANEL_H:.1f} mm")
-    print(f"  All lines: red hairline ({CUT_WIDTH}mm) = cut")
+
+
+def generate_svg(svg_path):
+    w_pt, h_pt = _page_pt()
+    surface = cairo.SVGSurface(svg_path, w_pt, h_pt)
+    ctx = cairo.Context(surface)
+    ctx.scale(MM_TO_PT, MM_TO_PT)
+    ctx.translate(PAGE_MARGIN, PAGE_MARGIN)
+    draw(ctx)
+    surface.finish()
 
 
 if __name__ == "__main__":
     base = "/home/medivack/work/puppet/clock/led-clock/arduino/wordclock_ru"
-    out = f"{base}/laser_cut_mask.svg"
-    generate(out)
+    pdf = f"{base}/laser_cut_mask.pdf"
+    svg = f"{base}/laser_cut_mask.svg"
+    generate_pdf(pdf)
+    generate_svg(svg)
 
-    dst = "/home/medivack/Downloads/laser_cut_mask.svg"
-    shutil.copy2(out, dst)
-    print(f"Copied to: {dst}")
+    for src in (pdf, svg):
+        shutil.copy2(src, f"/home/medivack/Downloads/{os.path.basename(src)}")
+
+    print("Laser cut layout generated (send the PDF to the shop):")
+    print(f"  PDF (1:1, mm): {pdf}")
+    print(f"  SVG (preview): {svg}")
+    print(f"  Panel: {PANEL_W:.1f} x {PANEL_H:.1f} mm  (page size 1:1)")
+    print(f"  Cut lines: red hairline ({CUT_WIDTH}mm), glyphs as closed curves")
+    print("  Copied both to ~/Downloads")

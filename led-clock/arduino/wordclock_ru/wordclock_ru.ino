@@ -19,9 +19,15 @@ const int   DST_OFFSET    = 0;
 #define GRID_LEDS   (ROWS * COLS)  // 256
 #define DOT_LEDS    6
 #define NUM_LEDS    (GRID_LEDS + DOT_LEDS)  // 262
-#define BRIGHTNESS  40
+#define BRIGHTNESS  200
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
+
+// Visual test mode: hold BOOT (GPIO0) at power-on/reset to cycle every time
+// of the 12h dial at 1 clock-minute per TEST_STEP_MS (1 min = 1 s). Reuses the
+// real showTime() so any rendering/signal glitch is reproduced on screen.
+#define TEST_BTN_PIN 0
+#define TEST_STEP_MS 1000
 
 // Dot LED indices (4 LEDs after the grid, centered below)
 // 6-LED dot strip (indices 256-261). Outer pairs used; middle two (258,259)
@@ -32,8 +38,10 @@ const int   DST_OFFSET    = 0;
 #define DOT_4  261  // right pair, outer
 
 CRGB leds[NUM_LEDS];
-const CRGB COLOR_ON  = CRGB(255, 180, 80);
-const CRGB COLOR_OFF = CRGB(0, 0, 0);
+const CRGB COLOR_ON    = CRGB(255, 166, 47);  // warm golden amber #FFA62F
+const CRGB COLOR_OFF   = CRGB(0, 0, 0);
+const CRGB COLOR_MINUS = CRGB(255, 0, 0);     // minus minute-dots = red
+const CRGB COLOR_PLUS  = CRGB(0, 200, 0);     // plus minute-dots = green
 
 // Grid 16×16 v4 (zero reading order issues, separate NOM_5/NOM_10):
 //  0: ЪДВАДЦАТЬНПЯТЬИЧ   ДВАДЦАТЬ _ ПЯТЬ_M
@@ -44,7 +52,7 @@ const CRGB COLOR_OFF = CRGB(0, 0, 0);
 //  5: ДЕСЯТИПЕРВОГОТРИ   ДЕСЯТИ ПЕРВОГО ТРИ
 //  6: ВТОРОГОПЯТОГОЧАС   ВТОРОГО ПЯТОГО ЧАС
 //  7: ТРЕТЬЕГОШЕСТОГОВ   ТРЕТЬЕГО ШЕСТОГО
-//  8: ЧЕТВЁРТОГОЧЕТЫРЕ   ЧЕТВЁРТОГО ЧЕТЫРЕ
+//  8: ЧЕТВЕРТОГОЧЕТЫРЕ   ЧЕТВЕРТОГО ЧЕТЫРЕ
 //  9: СЕДЬМОГОВОСЬМОГО   СЕДЬМОГО ВОСЬМОГО
 // 10: ДЕВЯТОГОДЕСЯТОГО   ДЕВЯТОГО ДЕСЯТОГО
 // 11: ОДИННАДЦАТОГОДВА   ОДИННАДЦАТОГО ДВА
@@ -79,7 +87,7 @@ const WordPos HOURS_GEN[] = {
     { 5,  6, 13},    //  1: ПЕРВОГО
     { 6,  0,  7},    //  2: ВТОРОГО
     { 7,  0,  8},    //  3: ТРЕТЬЕГО
-    { 8,  0, 10},    //  4: ЧЕТВЁРТОГО
+    { 8,  0, 10},    //  4: ЧЕТВЕРТОГО
     { 6,  7, 13},    //  5: ПЯТОГО
     { 7,  8, 15},    //  6: ШЕСТОГО
     { 9,  0,  8},    //  7: СЕДЬМОГО
@@ -123,12 +131,12 @@ uint8_t nextHour(uint8_t h) {
 }
 
 void showDots(uint8_t minus_dots, uint8_t plus_dots) {
-    // Left pair (DOT_1, DOT_2) = minus, filled from center outward
-    if (minus_dots >= 1) leds[DOT_2] = COLOR_ON;
-    if (minus_dots >= 2) leds[DOT_1] = COLOR_ON;
-    // Right pair (DOT_3, DOT_4) = plus, filled from center outward
-    if (plus_dots >= 1)  leds[DOT_3] = COLOR_ON;
-    if (plus_dots >= 2)  leds[DOT_4] = COLOR_ON;
+    // Left pair (DOT_1, DOT_2) = minus (red), filled from center outward
+    if (minus_dots >= 1) leds[DOT_2] = COLOR_MINUS;
+    if (minus_dots >= 2) leds[DOT_1] = COLOR_MINUS;
+    // Right pair (DOT_3, DOT_4) = plus (green), filled from center outward
+    if (plus_dots >= 1)  leds[DOT_3] = COLOR_PLUS;
+    if (plus_dots >= 2)  leds[DOT_4] = COLOR_PLUS;
 }
 
 void showTime(const ClockState& st) {
@@ -230,13 +238,34 @@ void startupSweep() {
 
 ClockState lastState = {0, 0};
 bool firstRun = true;
+bool testMode = false;
+
+// Cycle every time of the 12h dial once (1 clock-minute per TEST_STEP_MS).
+void runVisualTest() {
+    for (uint8_t h = 1; h <= 12; h++) {
+        for (uint8_t m = 0; m < 60; m++) {
+            showTime((ClockState){h, m});
+            delay(TEST_STEP_MS);
+        }
+    }
+}
 
 void setup() {
     Serial.begin(115200);
+    pinMode(TEST_BTN_PIN, INPUT_PULLUP);
     FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
     FastLED.setBrightness(BRIGHTNESS);
+    FastLED.setMaxPowerInVoltsAndMilliamps(5, 4500);  // cap draw, protect the PSU
     fill_solid(leds, NUM_LEDS, COLOR_OFF);
     FastLED.show();
+
+    delay(50);  // debounce settle before sampling the strap pin
+    testMode = (digitalRead(TEST_BTN_PIN) == LOW);
+    if (testMode) {
+        Serial.println("TEST MODE: cycling all 12h (1 min = 1 s)");
+        return;  // skip WiFi/NTP; loop() drives the visual test
+    }
+
     startupSweep();
     connectWiFi();
     configTime(GMT_OFFSET, DST_OFFSET, NTP_SERVER);
@@ -246,6 +275,11 @@ void setup() {
 }
 
 void loop() {
+    if (testMode) {
+        runVisualTest();  // one full pass, then repeat
+        return;
+    }
+
     struct tm t;
     if (!getLocalTime(&t)) { delay(1000); return; }
 
@@ -257,6 +291,8 @@ void loop() {
         showTime(current);
         lastState = current;
         firstRun = false;
+    } else {
+        FastLED.show();  // re-assert buffer every second to heal latched glitches
     }
     delay(1000);
 }

@@ -6,7 +6,7 @@
 
 | # | Компонент | Цена | Ссылка |
 |---|-----------|------|--------|
-| 1 | WS2812B лента 60 LED/m, 5м, IP30, чёрная PCB, DC5V | ~1 200₽ | [AliExpress](https://www.aliexpress.com/item/2036819167.html) |
+| 1 | WS2812B лента 60 LED/m, 5м, IP30, черная PCB, DC5V | ~1 200₽ | [AliExpress](https://www.aliexpress.com/item/2036819167.html) |
 | 2 | ESP32-S3-DevKitC-1 (N8R2, 8MB Flash + 2MB PSRAM) | ~800₽ | [AliExpress](https://www.aliexpress.com/item/1005003984006664.html) |
 | 3 | Блок питания 5V 5A 25W, адаптер для LED | ~650₽ | [AliExpress](https://www.aliexpress.com/item/33050368364.html) |
 | 4 | Провода силикон 22AWG, 5 цветов, 30м | ~250₽ | [AliExpress](https://ru.aliexpress.com/item/32829720045.html) |

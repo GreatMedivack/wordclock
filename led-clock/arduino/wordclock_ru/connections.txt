@@ -19,3 +19,18 @@ Row 12: DOUT → Row 13 DOUT
 Row 13: DIN → Row 14 DIN
 Row 14: DOUT → Row 15 DOUT
 Row 15: DOUT → 4-dot strip DIN
+
+Power (S-25-5, 5V 5A — feeds BOTH the strip and the ESP32):
+  PSU V+ (5V)  → strip 5V  AND  ESP32 "5V" pin
+  PSU V- (GND) → strip GND AND  ESP32 "GND" pin   (single common ground)
+  ESP32 GPIO48 → [330 ohm] → strip DIN (data)
+
+Critical notes:
+- Ground MUST be a solid short direct wire (NOT a breadboard jumper). A floating
+  ground reference caused "green snow"/brightness jumps — fixed by a real GND wire.
+- Do NOT power via USB and external 5V at the same time: the DevKitC-1 5V pin and
+  USB 5V are not diode-isolated -> they short together. Flash via USB only (external
+  5V off); run on external 5V only (USB out).
+- Never feed 5V into the "3V3" pin — it destroys the board. 5V goes to the "5V" pin.
+- If powering the ESP32 from a separate USB charger instead, its GND must still tie
+  to the strip/PSU GND, or the green-snow corruption returns.

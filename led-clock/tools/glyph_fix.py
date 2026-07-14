@@ -6,12 +6,12 @@ Black Ops One is a stencil font: the islands inside О, А, Б, В, Д, Р, Ь, 
 are held to the body by thin bridges (перемычки). In this font those bridges are only
 0.2-0.4mm wide — below the shop's 1mm minimum gap between cut lines, and too fragile.
 
-Fix: trim every closed letter contour inward by TRIM with square (mitre) joins. Pulling
-each opening edge back by TRIM widens every gap between two cut lines — the bridges most
-of all — by 2*TRIM, so the thinnest bridge (~0.25mm) reaches ~1.05mm and the islands only
-get more firmly attached (the material grows). Mitre joins keep every corner crisp, so the
-letters stay exactly on-model, just a hair lighter in weight. Simple and uniform: no
-per-feature detection, no rounding, no notches.
+Fix: widen ONLY those bridges — the letters keep their exact original size and weight.
+Per glyph: seal the bridge slits to reveal the counter islands, isolate just the material
+connected to an island, take its thin necks (the bridges) and grow them by GROW each side
+into the surrounding opening. Nothing else on the glyph moves — the outer silhouette,
+stroke weight, chamfers and every non-counter letter are byte-for-byte the original font.
+The thinnest ~0.25mm bridge ends up ~1.15mm, the island only more firmly attached.
 
 Drop-in usage in a cairo generator (replaces `ctx.move_to(x, y); ctx.text_path(ch)`):
 
@@ -28,12 +28,12 @@ import os
 from functools import reduce
 
 from shapely.geometry import Polygon
+from shapely.ops import unary_union
 
-# Inward trim of every opening contour (mm). Each gap between two cut lines grows by
-# 2*TRIM, so the thinnest 0.25mm bridge reaches ~1.05mm — over the shop's 1mm minimum.
-TRIM = 0.4
-# Mitre keeps corners crisp; the limit clamps spikes at acute vertices (А, М, Ж tips).
-MITRE = 4.0
+SEAL = 0.5     # close radius (mm) that seals the 0.2-0.4mm bridge slits to reveal islands
+DETECT = 0.5   # a bridge is island material an opening-by-DETECT erosion removes (<2*DETECT)
+GROW = 0.45    # widen each detected bridge by this much per side -> width grows by ~0.9mm
+NICK = 0.15    # ignore detected specks smaller than this (mm^2) — chamfer corner artifacts
 
 FONT_FACE = "Black Ops One"
 
@@ -83,16 +83,48 @@ def _raw_opening(ch, font_size):
     return reduce(lambda a, b: a.symmetric_difference(b), polys)
 
 
-def fixed_opening(ch, font_size):
-    """DRC-fixed glyph opening (shapely geometry) at the baseline origin, cached.
+def _parts(g):
+    if g is None or g.is_empty:
+        return []
+    return [g] if g.geom_type == "Polygon" else list(g.geoms)
 
-    Trim every closed contour inward by TRIM (mitre joins) -> every gap between cut
-    lines, bridges included, widens by 2*TRIM while corners stay crisp."""
+
+def _fill_holes(g):
+    return unary_union([Polygon(p.exterior) for p in _parts(g)])
+
+
+def _widen_bridges(opening):
+    """Widen only the island-holding bridges to >= ~1mm; the rest of the glyph is
+    left exactly as-is (full original size and weight)."""
+    # Seal the thin bridge slits so each counter becomes an enclosed island (a hole).
+    sealed = opening.buffer(+SEAL, join_style=2, mitre_limit=3) \
+                    .buffer(-SEAL, join_style=2, mitre_limit=3)
+    islands = unary_union([Polygon(h) for p in _parts(sealed) for h in p.interiors])
+    if islands.is_empty:
+        return opening                      # no counter island -> glyph untouched
+    # Inner material = filled silhouette minus opening = islands + bridges + chamfer bits.
+    inner = _fill_holes(sealed).difference(opening)
+    island_material = unary_union(
+        [c for c in _parts(inner) if c.intersects(islands.buffer(0.02))])
+    if island_material.is_empty:
+        return opening
+    # Bridges = the thin necks of that material (the islands themselves survive erosion).
+    thick = island_material.buffer(-DETECT, join_style=1).buffer(+DETECT, join_style=1)
+    bridges = unary_union(
+        [t for t in _parts(island_material.difference(thick)) if t.area > NICK])
+    if bridges.is_empty:
+        return opening
+    # Grow the bridges into the surrounding opening -> ~0.9mm wider, island still attached.
+    return opening.difference(bridges.buffer(GROW, join_style=2, mitre_limit=2))
+
+
+def fixed_opening(ch, font_size):
+    """DRC-fixed glyph opening (shapely geometry) at the baseline origin, cached."""
     key = (ch, round(font_size, 3))
     if key not in _cache:
         geom = _raw_opening(ch, font_size)
-        if geom is not None and not geom.is_empty and TRIM > 0:
-            geom = geom.buffer(-TRIM, join_style=2, mitre_limit=MITRE)
+        if geom is not None and not geom.is_empty:
+            geom = _widen_bridges(geom)
         _cache[key] = geom
     return _cache[key]
 

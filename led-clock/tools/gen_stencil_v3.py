@@ -10,6 +10,8 @@ import ctypes
 import math
 import os
 
+import glyph_fix
+
 # Register the project font with fontconfig so cairo finds it by family name
 _FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           os.pardir, "arduino", "wordclock_ru", "BlackOpsOne.ttf")
@@ -137,8 +139,7 @@ def generate_svg():
             y = cy - ref.height / 2 - ref.y_bearing
 
             ctx.new_path()
-            ctx.move_to(x, y)
-            ctx.text_path(ch)
+            glyph_fix.append_path(ctx, ch, FONT_SIZE, x, y)
 
             ctx.set_source_rgb(*LETTER_COLOR)
             ctx.set_fill_rule(cairo.FillRule.EVEN_ODD)

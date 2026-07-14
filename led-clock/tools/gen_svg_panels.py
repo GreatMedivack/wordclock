@@ -17,6 +17,8 @@ import ctypes
 import math
 import os
 
+import glyph_fix
+
 # Register the project font with fontconfig so cairo finds it by family name
 _FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           os.pardir, "arduino", "wordclock_ru", "BlackOpsOne.ttf")
@@ -131,15 +133,21 @@ def _draw_grid_lines(ctx, ox=0):
         ctx.stroke()
 
 
-def _draw_text_centered(ctx, cx, cy, ch, ref=None):
+def _draw_text_centered(ctx, cx, cy, ch, ref=None, fix=False):
     """Center ch horizontally; vertically align by ref glyph's box so all
-    letters share a common baseline/top edge (ref=None: self-centered)."""
+    letters share a common baseline/top edge (ref=None: self-centered).
+
+    fix=True emits the DRC-fixed outline (>=1mm between cut lines) for the cut
+    grid glyphs; the mono LED-index labels are drawn as plain text."""
     ext = ctx.text_extents(ch)
     vext = ctx.text_extents(ref) if ref else ext
     x = cx - ext.width / 2 - ext.x_bearing
     y = cy - vext.height / 2 - vext.y_bearing
-    ctx.move_to(x, y)
-    ctx.text_path(ch)
+    if fix:
+        glyph_fix.append_path(ctx, ch, FONT_SIZE, x, y)
+    else:
+        ctx.move_to(x, y)
+        ctx.text_path(ch)
 
 
 def generate_panel_front(path):
@@ -164,7 +172,7 @@ def generate_panel_front(path):
     for r in range(ROWS):
         for c in range(COLS):
             cx, cy = cell_center(r, c)
-            _draw_text_centered(ctx, cx, cy, GRID[r][c], ref="Н")
+            _draw_text_centered(ctx, cx, cy, GRID[r][c], ref="Н", fix=True)
             if (r, c) in ACTIVE:
                 ctx.set_source_rgb(1, 1, 1)
             else:
@@ -265,7 +273,7 @@ def generate_cutting_template(path):
     for r in range(ROWS):
         for c in range(COLS):
             cx, cy = cell_center(r, c)
-            _draw_text_centered(ctx, ox + cx, cy, GRID[r][c], ref="Н")
+            _draw_text_centered(ctx, ox + cx, cy, GRID[r][c], ref="Н", fix=True)
             if (r, c) in ACTIVE:
                 ctx.set_source_rgb(1, 1, 1)
             else:

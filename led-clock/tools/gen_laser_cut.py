@@ -13,6 +13,8 @@ import math
 import os
 import shutil
 
+import glyph_fix
+
 # Register the project font with fontconfig so cairo finds it by family name
 _FONT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           os.pardir, "arduino", "wordclock_ru", "BlackOpsOne.ttf")
@@ -108,8 +110,9 @@ def draw(ctx):
             y = cy - ref.height / 2 - ref.y_bearing
 
             ctx.new_path()
-            ctx.move_to(x, y)
-            ctx.text_path(ch)   # each glyph contour is already a closed TrueType outline
+            # DRC-fixed outline: chamfers/tips that leave <1mm material are squared
+            # off so every remaining web is >=1mm (see glyph_fix). Closed curves.
+            glyph_fix.append_path(ctx, ch, FONT_SIZE, x, y)
             ctx.stroke()
 
     # Dot circles — explicitly closed cut paths

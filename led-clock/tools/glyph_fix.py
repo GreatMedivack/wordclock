@@ -6,12 +6,12 @@ Black Ops One is a stencil font: the islands inside О, А, Б, В, Д, Р, Ь, 
 are held to the body by thin bridges (перемычки). In this font those bridges are only
 0.2-0.4mm wide — below the shop's 1mm minimum gap between cut lines, and too fragile.
 
-Fix: for each counter letter, push its island out with straight (mitre) joins by just
-enough to bring its bridge up to TARGET width. Straight joins keep the blocky counter
-edges — no rounding, no stair-steps — and sizing the push per letter makes every bridge
-the same width. The outer silhouette, stroke weight, chamfers and every non-counter
-letter are byte-for-byte the original font; only the counter shrinks a little and its
-bridge thickens. Islands stay firmly attached.
+Fix: rebuild each bridge as a clean straight 1mm bar, with one long edge snapped flush
+to the counter's edge so the widening cut runs into the counter (no stair-step on the
+outside). Bars are axis-aligned rectangles — no rounding, no steps, all the same width.
+The outer silhouette, stroke weight, chamfers and every non-counter letter are
+byte-for-byte the original font; only the counters give up a 1mm strip to their bridge.
+Islands stay firmly attached.
 
 Drop-in usage in a cairo generator (replaces `ctx.move_to(x, y); ctx.text_path(ch)`):
 
@@ -27,12 +27,14 @@ import ctypes
 import os
 from functools import reduce
 
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, box
 from shapely.ops import unary_union
 
 SEAL = 0.5      # close radius (mm) that seals the 0.2-0.4mm bridge slits to find islands
-TARGET = 1.05   # every bridge is brought up to this width (mm), just over the shop's 1mm
-MITRE = 5.0     # mitre limit for the straight-join island push (sharp blocky corners)
+DETECT = 0.5    # a bridge is island material an opening-by-DETECT erosion removes (<1mm)
+BRIDGE_W = 1.0  # rebuilt bridge width (mm), just over the shop's 1mm minimum
+BRIDGE_EXT = 0.8   # extend the bar past the neck ends so it fully re-joins island and body
+EDGE_SNAP = 0.8    # a bridge within this of a counter edge is snapped flush to that edge
 
 FONT_FACE = "Black Ops One"
 
@@ -92,37 +94,54 @@ def _fill_holes(g):
     return unary_union([Polygon(p.exterior) for p in _parts(g)])
 
 
-def _min_bridge(island_material):
-    """Narrowest neck width (mm) of the island+bridge material."""
-    for half in [i * 0.025 for i in range(1, 24)]:
-        opened = island_material.buffer(-half, join_style=1).buffer(+half, join_style=1)
-        if island_material.difference(opened).area > 0.05:
-            return 2 * half
-    return 2.0                              # no neck < ~1.15mm -> already fine
+def _flush_bar(neck, island):
+    """A clean straight BRIDGE_W bar over `neck`, one long edge snapped flush to the
+    counter island's edge so the cut runs into the counter (no stair-step on the outside);
+    a mid-counter neck (e.g. О's centre bar) is centred instead."""
+    bx0, by0, bx1, by1 = neck.bounds
+    ix0, iy0, ix1, iy1 = island.bounds
+    if (by1 - by0) > (bx1 - bx0):                       # vertical bridge
+        if min(abs(bx0 - ix0), abs(bx1 - ix1)) > EDGE_SNAP:
+            cx = (bx0 + bx1) / 2
+            x0, x1 = cx - BRIDGE_W / 2, cx + BRIDGE_W / 2
+        elif abs(bx0 - ix0) <= abs(bx1 - ix1):          # flush to counter's left edge
+            x0, x1 = ix0, ix0 + BRIDGE_W
+        else:                                            # flush to counter's right edge
+            x0, x1 = ix1 - BRIDGE_W, ix1
+        return box(x0, by0 - BRIDGE_EXT, x1, by1 + BRIDGE_EXT)
+    if min(abs(by0 - iy0), abs(by1 - iy1)) > EDGE_SNAP:  # horizontal bridge
+        cy = (by0 + by1) / 2
+        y0, y1 = cy - BRIDGE_W / 2, cy + BRIDGE_W / 2
+    elif abs(by0 - iy0) <= abs(by1 - iy1):
+        y0, y1 = iy0, iy0 + BRIDGE_W
+    else:
+        y0, y1 = iy1 - BRIDGE_W, iy1
+    return box(bx0 - BRIDGE_EXT, y0, bx1 + BRIDGE_EXT, y1)
 
 
 def _widen_bridges(opening):
-    """Bring every island bridge up to TARGET width by pushing the counter island out
-    by just enough, with ROUND joins so the counter edge stays smooth (no stair-steps).
-    The outer silhouette and stroke weight are untouched; only the counter shrinks a
-    little and its bridge thickens. Each letter's grow is sized so all bridges match."""
+    """Rebuild each island bridge as a clean straight BRIDGE_W bar, flush to the counter
+    edge. The outer silhouette, stroke weight and every non-counter letter stay
+    byte-for-byte the original font; only the sub-mm bridges become uniform 1mm bars."""
     # Seal the thin bridge slits so each counter becomes an enclosed island (a hole).
     sealed = opening.buffer(+SEAL, join_style=2, mitre_limit=3) \
                     .buffer(-SEAL, join_style=2, mitre_limit=3)
-    islands = unary_union([Polygon(h) for p in _parts(sealed) for h in p.interiors])
-    if islands.is_empty:
-        return opening                      # no counter island -> glyph untouched
-    # Inner material = filled silhouette minus opening = islands + bridges + chamfer bits.
-    inner = _fill_holes(sealed).difference(opening)
-    island_material = unary_union(
-        [c for c in _parts(inner) if c.intersects(islands.buffer(0.02))])
-    if island_material.is_empty:
-        return opening
-    delta = (TARGET - _min_bridge(island_material)) / 2.0
-    if delta <= 0:
-        return opening                      # bridges already >= TARGET
-    return opening.difference(
-        island_material.buffer(delta, join_style=2, mitre_limit=MITRE))
+    inner = _fill_holes(sealed).difference(opening)   # islands + bridges + chamfer bits
+    bars = []
+    for p in _parts(sealed):
+        for hole in p.interiors:
+            island = Polygon(hole)
+            material = unary_union(
+                [c for c in _parts(inner) if c.intersects(island.buffer(0.02))])
+            if material.is_empty:
+                continue
+            thick = material.buffer(-DETECT, join_style=1).buffer(+DETECT, join_style=1)
+            for neck in _parts(material.difference(thick)):
+                if 0.1 < neck.area < 2.0:      # real bridge (skip nicks and pointed counters)
+                    bars.append(_flush_bar(neck, island))
+    if not bars:
+        return opening                          # no counter island -> glyph untouched
+    return opening.difference(unary_union(bars))
 
 
 def fixed_opening(ch, font_size):

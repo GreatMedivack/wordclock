@@ -31,9 +31,7 @@ from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
 SEAL = 0.5     # close radius (mm) that seals the 0.2-0.4mm bridge slits to reveal islands
-DETECT = 0.5   # a bridge is island material an opening-by-DETECT erosion removes (<2*DETECT)
-GROW = 0.45    # widen each detected bridge by this much per side -> width grows by ~0.9mm
-NICK = 0.15    # ignore detected specks smaller than this (mm^2) — chamfer corner artifacts
+GROW = 0.4     # grow each counter island (with its bridges) by this much -> bridges +0.8mm
 
 FONT_FACE = "Black Ops One"
 
@@ -94,8 +92,9 @@ def _fill_holes(g):
 
 
 def _widen_bridges(opening):
-    """Widen only the island-holding bridges to >= ~1mm; the rest of the glyph is
-    left exactly as-is (full original size and weight)."""
+    """Widen the island-holding bridges to >= ~1mm by growing each counter island (with
+    its bridges) uniformly. The outer silhouette and stroke weight stay exactly the same;
+    only the counters shrink a touch and their bridges thicken — cleanly, symmetrically."""
     # Seal the thin bridge slits so each counter becomes an enclosed island (a hole).
     sealed = opening.buffer(+SEAL, join_style=2, mitre_limit=3) \
                     .buffer(-SEAL, join_style=2, mitre_limit=3)
@@ -104,18 +103,14 @@ def _widen_bridges(opening):
         return opening                      # no counter island -> glyph untouched
     # Inner material = filled silhouette minus opening = islands + bridges + chamfer bits.
     inner = _fill_holes(sealed).difference(opening)
+    # Keep only the material connected to an island (islands + their bridges).
     island_material = unary_union(
         [c for c in _parts(inner) if c.intersects(islands.buffer(0.02))])
     if island_material.is_empty:
         return opening
-    # Bridges = the thin necks of that material (the islands themselves survive erosion).
-    thick = island_material.buffer(-DETECT, join_style=1).buffer(+DETECT, join_style=1)
-    bridges = unary_union(
-        [t for t in _parts(island_material.difference(thick)) if t.area > NICK])
-    if bridges.is_empty:
-        return opening
-    # Grow the bridges into the surrounding opening -> ~0.9mm wider, island still attached.
-    return opening.difference(bridges.buffer(GROW, join_style=2, mitre_limit=2))
+    # Grow it into the surrounding counter opening: bridges gain 2*GROW, counters shrink
+    # by GROW all round (shape preserved), island only more firmly attached.
+    return opening.difference(island_material.buffer(GROW, join_style=2, mitre_limit=3))
 
 
 def fixed_opening(ch, font_size):

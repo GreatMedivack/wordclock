@@ -6,12 +6,11 @@ Black Ops One is a stencil font: the islands inside О, А, Б, В, Д, Р, Ь, 
 are held to the body by thin bridges (перемычки). In this font those bridges are only
 0.2-0.4mm wide — below the shop's 1mm minimum gap between cut lines, and too fragile.
 
-Fix: widen ONLY those bridges — the letters keep their exact original size and weight.
-Per glyph: seal the bridge slits to reveal the counter islands, isolate just the material
-connected to an island, take its thin necks (the bridges) and grow them by GROW each side
-into the surrounding opening. Nothing else on the glyph moves — the outer silhouette,
-stroke weight, chamfers and every non-counter letter are byte-for-byte the original font.
-The thinnest ~0.25mm bridge ends up ~1.15mm, the island only more firmly attached.
+Fix: replace each thin bridge with a clean straight bar of a uniform BRIDGE_W width,
+aligned to the bridge's own axis. The letters keep their exact original size and weight —
+the outer silhouette, stroke weight, chamfers and every non-counter letter are
+byte-for-byte the original font; only the sub-mm bridges become uniform ~1mm bars. No
+steps, no per-bridge width variation, islands stay firmly attached.
 
 Drop-in usage in a cairo generator (replaces `ctx.move_to(x, y); ctx.text_path(ch)`):
 
@@ -24,14 +23,20 @@ Drop-in usage in a cairo generator (replaces `ctx.move_to(x, y); ctx.text_path(c
 
 import cairo
 import ctypes
+import math
 import os
 from functools import reduce
 
-from shapely.geometry import Polygon
+from shapely.affinity import rotate
+from shapely.geometry import Polygon, box
 from shapely.ops import unary_union
 
-SEAL = 0.5     # close radius (mm) that seals the 0.2-0.4mm bridge slits to reveal islands
-GROW = 0.4     # grow each counter island (with its bridges) by this much -> bridges +0.8mm
+SEAL = 0.5        # close radius (mm) that seals the 0.2-0.4mm bridge slits to find islands
+DETECT = 0.5      # a bridge is island material an opening-by-DETECT erosion removes (<1mm)
+BRIDGE_W = 1.0    # every bridge is rebuilt as a clean straight bar this wide (mm)
+BRIDGE_EXT = 0.7  # extend each bar past the neck ends so it fully re-joins island and body
+BRIDGE_MIN = 0.1  # ignore detected specks below this area (mm^2) — corner nicks
+BRIDGE_MAX = 2.0  # above this a "thin" region is a pointed counter (А), not a bridge
 
 FONT_FACE = "Black Ops One"
 
@@ -91,10 +96,28 @@ def _fill_holes(g):
     return unary_union([Polygon(p.exterior) for p in _parts(g)])
 
 
+def _bar(neck):
+    """A clean straight BRIDGE_W-wide bar spanning `neck` along its own long axis."""
+    rect = neck.minimum_rotated_rectangle.exterior.coords
+    length, angle = 0.0, 0.0
+    for i in range(len(rect) - 1):
+        dx, dy = rect[i + 1][0] - rect[i][0], rect[i + 1][1] - rect[i][1]
+        edge = math.hypot(dx, dy)
+        if edge > length:
+            length, angle = edge, math.degrees(math.atan2(dy, dx))
+    angle %= 180
+    for axis in (0, 90, 180):                    # snap near-axis bridges perfectly straight
+        if abs(angle - axis) < 12:
+            angle = axis % 180
+    cx, cy = neck.centroid.x, neck.centroid.y
+    half = length / 2 + BRIDGE_EXT
+    return rotate(box(cx - half, cy - BRIDGE_W / 2, cx + half, cy + BRIDGE_W / 2),
+                  angle, origin=(cx, cy))
+
+
 def _widen_bridges(opening):
-    """Widen the island-holding bridges to >= ~1mm by growing each counter island (with
-    its bridges) uniformly. The outer silhouette and stroke weight stay exactly the same;
-    only the counters shrink a touch and their bridges thicken — cleanly, symmetrically."""
+    """Rebuild each island-holding bridge as a uniform, straight BRIDGE_W bar. The rest
+    of the glyph is left exactly as-is (full original size and weight)."""
     # Seal the thin bridge slits so each counter becomes an enclosed island (a hole).
     sealed = opening.buffer(+SEAL, join_style=2, mitre_limit=3) \
                     .buffer(-SEAL, join_style=2, mitre_limit=3)
@@ -103,14 +126,17 @@ def _widen_bridges(opening):
         return opening                      # no counter island -> glyph untouched
     # Inner material = filled silhouette minus opening = islands + bridges + chamfer bits.
     inner = _fill_holes(sealed).difference(opening)
-    # Keep only the material connected to an island (islands + their bridges).
     island_material = unary_union(
         [c for c in _parts(inner) if c.intersects(islands.buffer(0.02))])
     if island_material.is_empty:
         return opening
-    # Grow it into the surrounding counter opening: bridges gain 2*GROW, counters shrink
-    # by GROW all round (shape preserved), island only more firmly attached.
-    return opening.difference(island_material.buffer(GROW, join_style=2, mitre_limit=3))
+    # Bridges = the thin necks of that material; skip pointed counters (too big) and nicks.
+    thick = island_material.buffer(-DETECT, join_style=1).buffer(+DETECT, join_style=1)
+    bars = [_bar(t) for t in _parts(island_material.difference(thick))
+            if BRIDGE_MIN < t.area < BRIDGE_MAX]
+    if not bars:
+        return opening
+    return opening.difference(unary_union(bars))
 
 
 def fixed_opening(ch, font_size):
